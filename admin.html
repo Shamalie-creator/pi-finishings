@@ -870,6 +870,15 @@ window.openJobDrawer=function(id){
     '<div class="drw-row"><span class="drw-lbl">Budget Range</span><span class="drw-val">'+(job.budget||'—')+'</span></div>'+
     '<div class="drw-row"><span class="drw-lbl">Start Date</span><span class="drw-val">'+(job.start_date||'—')+'</span></div></div>'+
 
+    '<div class="drw-section"><div class="drw-sec-title">💸 Discount</div>'+
+    '<div style="display:flex;gap:0.6rem;align-items:flex-end;margin-bottom:0.6rem">'+
+    '<div style="flex:1"><label style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--charcoal);display:block;margin-bottom:0.3rem">Amount (JMD)</label>'+
+    '<input class="field-input" id="discountAmount" type="number" placeholder="e.g. 5000" value="'+(job.discount||0)+'" style="width:100%" /></div>'+
+    '<div style="flex:1"><label style="font-size:0.68rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--charcoal);display:block;margin-bottom:0.3rem">OR Percentage (%)</label>'+
+    '<input class="field-input" id="discountPct" type="number" placeholder="e.g. 10" min="0" max="100" style="width:100%" /></div></div>'+
+    '<div id="discountPreview" style="font-size:0.8rem;color:var(--green);margin-bottom:0.6rem"></div>'+
+    '<button class="drw-btn dark" onclick="applyDiscount()">💾 Apply Discount</button></div>'+
+
     '<div class="drw-section"><div class="drw-sec-title">Site Visit</div>'+
     '<div class="drw-row"><span class="drw-lbl">Date</span><span class="drw-val">'+(job.visit_date||'—')+'</span></div>'+
     '<div class="drw-row"><span class="drw-lbl">Time</span><span class="drw-val">'+(job.time_slot||'—')+'</span></div></div>'+
@@ -1322,6 +1331,67 @@ document.addEventListener('input', function(e) {
       }
     }
   } catch(e) {}
+});
+
+
+// ── DISCOUNT ──
+window.applyDiscount = function() {
+  if (!currentJob) return;
+  var amt = parseFloat(document.getElementById('discountAmount').value) || 0;
+  var pct = parseFloat(document.getElementById('discountPct').value) || 0;
+  var originalAmount = currentJob.amount || 0;
+
+  // If percentage entered, convert to amount
+  if (pct > 0 && amt === 0) {
+    amt = Math.round(originalAmount * (pct / 100));
+    document.getElementById('discountAmount').value = amt;
+  }
+
+  if (amt <= 0) { showToast('Enter a discount amount or percentage', 'error'); return; }
+  if (amt > originalAmount) { showToast('Discount cannot exceed the estimate amount', 'error'); return; }
+
+  var newAmount  = originalAmount - amt;
+  var newDeposit = Math.round(newAmount * 0.5);
+
+  var preview = document.getElementById('discountPreview');
+  if (preview) {
+    preview.innerHTML = 'New total: <strong>JMD ' + newAmount.toLocaleString() + '</strong> &nbsp;·&nbsp; New deposit: <strong>JMD ' + newDeposit.toLocaleString() + '</strong>';
+  }
+
+  var confirmMsg = 'Apply JMD ' + amt.toLocaleString() + ' discount? New total: JMD ' + newAmount.toLocaleString() + ' | New 50% deposit: JMD ' + newDeposit.toLocaleString();
+  if (!confirm(confirmMsg)) return;
+
+  sbUpdate('estimates', currentJob.id, {
+    discount: amt,
+    amount: newAmount,
+    deposit: newDeposit
+  }).then(function() {
+    currentJob.discount = amt;
+    currentJob.amount   = newAmount;
+    currentJob.deposit  = newDeposit;
+    renderJobs();
+    showToast('Discount of JMD ' + amt.toLocaleString() + ' applied ✓');
+    // Refresh drawer to show updated numbers
+    openJobDrawer(currentJob.id);
+  }).catch(function() { showToast('Failed to apply discount', 'error'); });
+};
+
+// Live preview as user types
+document.addEventListener('input', function(e) {
+  if (!currentJob) return;
+  if (e.target && (e.target.id === 'discountAmount' || e.target.id === 'discountPct')) {
+    var amt = parseFloat(document.getElementById('discountAmount') && document.getElementById('discountAmount').value) || 0;
+    var pct = parseFloat(document.getElementById('discountPct') && document.getElementById('discountPct').value) || 0;
+    var orig = currentJob.amount || 0;
+    if (pct > 0 && amt === 0) amt = Math.round(orig * (pct / 100));
+    var preview = document.getElementById('discountPreview');
+    if (preview && amt > 0 && amt <= orig) {
+      var newAmt = orig - amt;
+      preview.innerHTML = 'New total: <strong>JMD ' + newAmt.toLocaleString() + '</strong> &nbsp;·&nbsp; New deposit: <strong>JMD ' + Math.round(newAmt*0.5).toLocaleString() + '</strong>';
+    } else if (preview) {
+      preview.innerHTML = '';
+    }
+  }
 });
 
 // ── INIT ──
