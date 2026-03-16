@@ -341,6 +341,31 @@
     .svc-toggle-switch.on{background:var(--green)}
     .svc-toggle-switch::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left 0.2s}
     .svc-toggle-switch.on::after{left:19px}
+
+    /* FINANCIALS */
+    .fin-tabs{display:flex;gap:0.5rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);padding-bottom:0}
+    .fin-tab{background:none;border:none;padding:0.65rem 1.2rem;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s}
+    .fin-tab:hover{color:var(--charcoal)}
+    .fin-tab.active{color:var(--charcoal);border-bottom-color:var(--charcoal);font-weight:700}
+    .fin-panel{display:none}.fin-panel.active{display:block}
+    .fin-toolbar{display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap}
+    .fin-period-btns{display:flex;gap:0.4rem;flex-wrap:wrap}
+    .period-btn{background:#fff;border:1.5px solid var(--border);border-radius:4px;padding:0.38rem 0.85rem;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s}
+    .period-btn:hover{border-color:var(--charcoal);color:var(--charcoal)}
+    .period-btn.active{background:var(--charcoal);border-color:var(--charcoal);color:var(--gold)}
+    .fin-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.8rem}
+    .fin-stat{background:#fff;border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem}
+    .fin-stat-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:0.3rem}
+    .fin-stat-val{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--charcoal)}
+    .fin-stat-val.green{color:var(--green)}
+    .fin-stat-val.red{color:var(--red)}
+    .fin-stat-val.gold{color:#c9a84c}
+    .sum-month-block{background:#fff;border:1px solid var(--border);border-radius:6px;margin-bottom:1rem;overflow:hidden}
+    .sum-month-head{background:var(--charcoal);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600}
+    .sum-month-body{padding:0.8rem 1.2rem}
+    .sum-row-item{display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px solid var(--border);font-size:13px}
+    .sum-row-item:last-child{border-bottom:none}
+    .sum-net{display:flex;justify-content:space-between;padding:0.6rem 0;font-weight:700;font-size:14px;border-top:2px solid var(--charcoal);margin-top:0.4rem}
   </style>
 </head>
 <body>
@@ -373,7 +398,7 @@
         <div class="nav-item" data-panel="jobs"><span class="nav-icon">📋</span>Jobs<span class="nav-badge" id="nb-jobs">0</span></div>
         <div class="nav-item" data-panel="workers"><span class="nav-icon">👷</span>Workers</div>
         <div class="nav-item" data-panel="payroll"><span class="nav-icon">💰</span>Payroll</div>
-        <div class="nav-item" data-panel="payments"><span class="nav-icon">🏦</span>Payments</div>
+        <div class="nav-item" data-panel="payments"><span class="nav-icon">📊</span>Financials</div>
         <div class="nav-item" data-panel="services"><span class="nav-icon">🔧</span>Services</div>
         <div class="nav-item" data-panel="gallery"><span class="nav-icon">🖼</span>Images</div>
         <div class="nav-item" data-panel="marketing"><span class="nav-icon">📣</span>Marketing</div>
@@ -587,7 +612,135 @@
       </div>
 
       <!-- ══ COMING SOON ══ -->
-      <div class="panel" id="panel-payments"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">🏦</div><div class="cs-title">Payments Manager</div><p class="cs-desc">Review deposit submissions, view proof of payment, approve or reject deposits.</p></div></div>
+            <!-- ══ FINANCIALS ══ -->
+      <div class="panel" id="panel-payments">
+
+        <!-- TAB SWITCHER -->
+        <div class="fin-tabs">
+          <button class="fin-tab active" data-ft="revenue" onclick="switchFinTab('revenue')">💰 Revenue</button>
+          <button class="fin-tab" data-ft="expenses" onclick="switchFinTab('expenses')">📋 Expenses</button>
+          <button class="fin-tab" data-ft="summary" onclick="switchFinTab('summary')">📊 Summary</button>
+        </div>
+
+        <!-- REVENUE TAB -->
+        <div class="fin-panel active" id="finpanel-revenue">
+          <div class="fin-toolbar">
+            <div class="fin-period-btns">
+              <button class="period-btn active" data-period="week" onclick="setRevPeriod('week')">This Week</button>
+              <button class="period-btn" data-period="month" onclick="setRevPeriod('month')">This Month</button>
+              <button class="period-btn" data-period="year" onclick="setRevPeriod('year')">This Year</button>
+              <button class="period-btn" data-period="all" onclick="setRevPeriod('all')">All Time</button>
+            </div>
+          </div>
+          <div class="fin-stats-row" id="revStats"></div>
+          <div class="card" style="margin-top:1rem">
+            <div class="card-header"><div class="card-title">Jobs & Payments</div></div>
+            <div class="tbl-wrap">
+              <table><thead><tr><th>Ref</th><th>Customer</th><th>Job Total</th><th>Paid</th><th>Outstanding</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="revTableBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPENSES TAB -->
+        <div class="fin-panel" id="finpanel-expenses">
+          <div class="fin-toolbar" style="justify-content:space-between">
+            <div class="fin-period-btns">
+              <button class="period-btn active" data-ep="month" onclick="setExpPeriod('month')">This Month</button>
+              <button class="period-btn" data-ep="year" onclick="setExpPeriod('year')">This Year</button>
+              <button class="period-btn" data-ep="all" onclick="setExpPeriod('all')">All Time</button>
+            </div>
+            <button class="drw-btn dark" style="width:auto;padding:0.5rem 1rem" onclick="openExpenseDrawer()">+ Add Expense</button>
+          </div>
+          <div class="fin-stats-row" id="expStats"></div>
+          <div class="card" style="margin-top:1rem">
+            <div class="card-header"><div class="card-title">Expense Ledger</div></div>
+            <div class="tbl-wrap">
+              <table><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th>Actions</th></tr></thead>
+              <tbody id="expTableBody"></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY TAB -->
+        <div class="fin-panel" id="finpanel-summary">
+          <div class="fin-period-btns" style="margin-bottom:1rem">
+            <button class="period-btn active" data-sp="month" onclick="setSumPeriod('month')">This Month</button>
+            <button class="period-btn" data-sp="year" onclick="setSumPeriod('year')">This Year</button>
+          </div>
+          <div id="summaryContent"></div>
+        </div>
+
+        <!-- EXPENSE DRAWER -->
+        <div class="overlay" id="expOverlay"></div>
+        <div class="drawer" id="expDrawer">
+          <div class="drw-head">
+            <div><div class="drw-title" id="expDrwTitle">Add Expense</div></div>
+            <button class="drw-close" onclick="closeExpDrawer()">✕</button>
+          </div>
+          <div class="drw-body">
+            <input type="hidden" id="expId" />
+            <div class="field-group"><label class="field-label">Date</label><input class="field-input" id="expDate" type="date" /></div>
+            <div class="field-group"><label class="field-label">Category</label>
+              <select class="field-input" id="expCategory">
+                <option value="staff">Staff Wages</option>
+                <option value="materials">Materials / Products</option>
+                <option value="equipment">Equipment</option>
+                <option value="transport">Transport / Fuel</option>
+                <option value="food">Staff Meals</option>
+                <option value="utilities">Utilities</option>
+                <option value="marketing">Marketing</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field-group"><label class="field-label">Description</label><input class="field-input" id="expDesc" placeholder="e.g. Lunch for crew, Drywall sheets" /></div>
+            <div class="field-group"><label class="field-label">Amount (JMD)</label><input class="field-input" id="expAmount" type="number" placeholder="e.g. 5000" /></div>
+            <div class="field-group"><label class="field-label">Notes (optional)</label><textarea class="field-input" id="expNotes" rows="2"></textarea></div>
+            <div style="display:flex;gap:0.6rem;margin-top:1rem">
+              <button class="drw-btn dark" onclick="saveExpense()">💾 Save Expense</button>
+              <button class="drw-btn outline" style="color:var(--red);border-color:var(--red)" id="expDeleteBtn" style="display:none" onclick="deleteExpense()">🗑 Delete</button>
+              <button class="drw-btn outline" onclick="closeExpDrawer()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENT MODAL (from jobs tab) -->
+        <div class="overlay" id="payOverlay"></div>
+        <div class="drawer" id="payDrawer">
+          <div class="drw-head">
+            <div><div class="drw-title" id="payDrwTitle">Record Payment</div><div class="drw-ref" id="payDrwRef"></div></div>
+            <button class="drw-close" onclick="closePayDrawer()">✕</button>
+          </div>
+          <div class="drw-body">
+            <div id="payJobSummary" class="drw-note"></div>
+            <div class="field-group"><label class="field-label">Amount Paid (JMD)</label><input class="field-input" id="payAmount" type="number" placeholder="Enter amount received" /></div>
+            <div class="field-group"><label class="field-label">Payment Type</label>
+              <select class="field-input" id="payType">
+                <option value="Deposit (50%)">Deposit (50%)</option>
+                <option value="Full Payment">Full Payment</option>
+                <option value="Partial Payment">Partial Payment</option>
+                <option value="Balance Payment">Balance Payment</option>
+              </select>
+            </div>
+            <div class="field-group"><label class="field-label">Payment Method</label>
+              <select class="field-input" id="payMethod">
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Online Transfer">Online Transfer</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="field-group"><label class="field-label">Date Received</label><input class="field-input" id="payDate" type="date" /></div>
+            <div class="field-group"><label class="field-label">Notes (optional)</label><input class="field-input" id="payNotes" placeholder="e.g. Paid via NCB to account ending 4521" /></div>
+            <div style="display:flex;gap:0.6rem;margin-top:1rem">
+              <button class="drw-btn dark" onclick="savePayment()">✅ Confirm Payment</button>
+              <button class="drw-btn outline" onclick="closePayDrawer()">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
             <!-- ══ SERVICES MANAGER ══ -->
       <div class="panel" id="panel-services">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem">
@@ -845,7 +998,7 @@ document.getElementById('logoutBtn').onclick=function(){
 };
 
 // ── PANEL SWITCHING ──
-var panelNames={overview:'Overview',jobs:'Jobs',workers:'Workers',payroll:'Payroll',payments:'Payments',services:'Services Manager',gallery:'Site Images',marketing:'Marketing',settings:'Settings'};
+var panelNames={overview:'Overview',jobs:'Jobs',workers:'Workers',payroll:'Payroll',payments:'Financials',services:'Services Manager',gallery:'Site Images',marketing:'Marketing',settings:'Settings'};
 function switchPanel(name){
   document.querySelectorAll('.nav-item').forEach(function(el){el.classList.toggle('active',el.dataset.panel===name);});
   document.querySelectorAll('.panel').forEach(function(el){el.classList.remove('active');});
@@ -855,6 +1008,7 @@ function switchPanel(name){
   document.getElementById('content').scrollTop=0;
   if(name==='payroll') renderPayroll();
   if(name==='gallery') renderImagesGrid();
+  if(name==='payments') renderRevenue();
   if(name==='services') { renderServicesGrid(); updateSvcCounts(); }
 }
 document.querySelectorAll('.nav-item').forEach(function(el){
@@ -875,7 +1029,7 @@ var jobFilter='all', jobSearch='', currentJob=null, currentWorker=null;
 
 function refreshData(){
   showToast('Refreshing...','success');
-  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices()]).then(function(r){
+  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices(),loadExpenses()]).then(function(r){
     loadOverview(r[0]);
     showToast('Data refreshed ✓');
   });
@@ -1839,6 +1993,358 @@ function syncServiceToImages(svc) {
   }).catch(function(){});
 }
 
+
+// ══ FINANCIALS ══
+var allExpenses = [];
+var currentExpense = null;
+var currentPayJob = null;
+var revPeriod = 'month';
+var expPeriod = 'month';
+var sumPeriod = 'month';
+
+// ── TAB SWITCHING ──
+window.switchFinTab = function(tab) {
+  document.querySelectorAll('.fin-tab').forEach(function(b){ b.classList.toggle('active', b.dataset.ft===tab); });
+  document.querySelectorAll('.fin-panel').forEach(function(p){ p.classList.remove('active'); });
+  var panel = document.getElementById('finpanel-'+tab);
+  if (panel) panel.classList.add('active');
+  if (tab==='revenue')  renderRevenue();
+  if (tab==='expenses') renderExpenses();
+  if (tab==='summary')  renderSummary();
+};
+
+// ── PERIOD HELPERS ──
+function getPeriodDates(period) {
+  var now = new Date();
+  var start, end = new Date();
+  if (period==='week') {
+    var day = now.getDay();
+    start = new Date(now); start.setDate(now.getDate()-day); start.setHours(0,0,0,0);
+  } else if (period==='month') {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+  } else if (period==='year') {
+    start = new Date(now.getFullYear(), 0, 1);
+  } else {
+    start = new Date('2020-01-01');
+  }
+  return { start: start, end: end };
+}
+
+function inPeriod(dateStr, period) {
+  if (!dateStr) return false;
+  var d = new Date(dateStr);
+  var p = getPeriodDates(period);
+  return d >= p.start && d <= p.end;
+}
+
+window.setRevPeriod = function(p) {
+  revPeriod = p;
+  document.querySelectorAll('[data-period]').forEach(function(b){ b.classList.toggle('active', b.dataset.period===p); });
+  renderRevenue();
+};
+window.setExpPeriod = function(p) {
+  expPeriod = p;
+  document.querySelectorAll('[data-ep]').forEach(function(b){ b.classList.toggle('active', b.dataset.ep===p); });
+  renderExpenses();
+};
+window.setSumPeriod = function(p) {
+  sumPeriod = p;
+  document.querySelectorAll('[data-sp]').forEach(function(b){ b.classList.toggle('active', b.dataset.sp===p); });
+  renderSummary();
+};
+
+// ── REVENUE ──
+function renderRevenue() {
+  var jobs = revPeriod==='all' ? allJobs : allJobs.filter(function(j){ return inPeriod(j.created_at, revPeriod); });
+  var totalBilled    = jobs.reduce(function(s,j){ return s+(j.amount||0); }, 0);
+  var totalCollected = jobs.reduce(function(s,j){ return s+(j.paid_amount||j.deposit||0); }, 0);
+  var totalOutstanding = jobs.reduce(function(s,j){
+    var paid = j.paid_amount||j.deposit||0;
+    var amt  = j.amount||0;
+    return s + Math.max(0, amt-paid);
+  }, 0);
+  var jobCount = jobs.length;
+
+  document.getElementById('revStats').innerHTML =
+    '<div class="fin-stat"><div class="fin-stat-label">Total Billed</div><div class="fin-stat-val gold">'+fmtMoney(totalBilled)+'</div></div>'+
+    '<div class="fin-stat"><div class="fin-stat-label">Collected</div><div class="fin-stat-val green">'+fmtMoney(totalCollected)+'</div></div>'+
+    '<div class="fin-stat"><div class="fin-stat-label">Outstanding</div><div class="fin-stat-val red">'+fmtMoney(totalOutstanding)+'</div></div>'+
+    '<div class="fin-stat"><div class="fin-stat-label">Total Jobs</div><div class="fin-stat-val">'+jobCount+'</div></div>';
+
+  var tbody = document.getElementById('revTableBody');
+  if (!jobs.length) { tbody.innerHTML='<tr><td colspan="8" class="empty-state">No jobs in this period.</td></tr>'; return; }
+  tbody.innerHTML = jobs.map(function(j) {
+    var paid = j.paid_amount || j.deposit || 0;
+    var outstanding = Math.max(0, (j.amount||0) - paid);
+    var payBadge = j.payment_confirmed
+      ? '<span class="badge b-confirmed">Paid</span>'
+      : (paid>0 ? '<span class="badge b-pending">Partial</span>' : '<span class="badge b-submitted">Unpaid</span>');
+    return '<tr>'+
+      '<td><span class="t-ref">'+j.ref+'</span></td>'+
+      '<td><div class="t-name">'+j.name+'</div><div class="t-sub">'+j.parish+'</div></td>'+
+      '<td><strong>'+fmtMoney(j.amount)+'</strong></td>'+
+      '<td><span style="color:var(--green);font-weight:600">'+(paid>0?'JMD '+Number(paid).toLocaleString():'—')+'</span></td>'+
+      '<td>'+(outstanding>0?'<span style="color:var(--red)">JMD '+Number(outstanding).toLocaleString()+'</span>':'<span style="color:var(--green)">✓ Clear</span>')+'</td>'+
+      '<td><span class="t-sub">'+(j.payment_method||'—')+'</span></td>'+
+      '<td>'+payBadge+'</td>'+
+      '<td><button class="act-btn blue" data-jid="'+j.id+'" onclick="openPayDrawer(this.dataset.jid)">💳 Record</button></td>'+
+    '</tr>';
+  }).join('');
+}
+
+// ── RECORD PAYMENT ──
+window.openPayDrawer = function(jobId) {
+  var job = allJobs.find(function(j){ return j.id===jobId; });
+  if (!job) return;
+  currentPayJob = job;
+  document.getElementById('payDrwTitle').textContent = 'Record Payment — '+job.name;
+  document.getElementById('payDrwRef').textContent = job.ref;
+  var paid = job.paid_amount || job.deposit || 0;
+  var outstanding = Math.max(0, (job.amount||0) - paid);
+  document.getElementById('payJobSummary').innerHTML =
+    '<strong>Job Total:</strong> '+fmtMoney(job.amount)+'<br>'+
+    '<strong>Previously Paid:</strong> '+(paid>0?'JMD '+Number(paid).toLocaleString():'Nothing yet')+'<br>'+
+    '<strong>Outstanding:</strong> '+(outstanding>0?'<span style="color:var(--red)">JMD '+Number(outstanding).toLocaleString()+'</span>':'<span style="color:var(--green)">✓ Fully paid</span>');
+  document.getElementById('payAmount').value = outstanding > 0 ? outstanding : '';
+  document.getElementById('payDate').value = new Date().toISOString().split('T')[0];
+  document.getElementById('payNotes').value = '';
+  document.getElementById('payOverlay').classList.add('open');
+  document.getElementById('payDrawer').classList.add('open');
+};
+
+window.savePayment = function() {
+  if (!currentPayJob) return;
+  var amount  = parseFloat(document.getElementById('payAmount').value)||0;
+  var type    = document.getElementById('payType').value;
+  var method  = document.getElementById('payMethod').value;
+  var date    = document.getElementById('payDate').value;
+  var notes   = document.getElementById('payNotes').value.trim();
+  if (amount <= 0) { showToast('Please enter an amount', 'error'); return; }
+
+  var prevPaid = currentPayJob.paid_amount || currentPayJob.deposit || 0;
+  var newPaid  = prevPaid + amount;
+  var isFullyPaid = newPaid >= (currentPayJob.amount||0);
+
+  var updates = {
+    paid_amount:       newPaid,
+    payment_method:    method,
+    payment_type:      type,
+    payment_date:      date,
+    payment_notes:     notes,
+    payment_confirmed: true,
+    status: isFullyPaid ? 'Fully Paid' : 'Deposit Confirmed'
+  };
+
+  sbUpdate('estimates', currentPayJob.id, updates).then(function() {
+    Object.assign(currentPayJob, updates);
+    renderRevenue();
+    renderJobs();
+    updateJobCounts();
+    closePayDrawer();
+    showToast('Payment of JMD '+amount.toLocaleString()+' recorded ✓');
+    if (isFullyPaid) { setTimeout(function(){ openInvoiceModal(currentPayJob); }, 400); }
+  }).catch(function(){ showToast('Failed to save payment', 'error'); });
+};
+
+function closePayDrawer() {
+  document.getElementById('payOverlay').classList.remove('open');
+  document.getElementById('payDrawer').classList.remove('open');
+  currentPayJob = null;
+}
+try { document.getElementById('payOverlay').onclick = closePayDrawer; } catch(e){}
+
+// ── EXPENSES ──
+function loadExpenses() {
+  return sbGet('expenses').then(function(data){
+    allExpenses = Array.isArray(data) ? data : [];
+    return allExpenses;
+  }).catch(function(){ allExpenses = []; return []; });
+}
+
+function renderExpenses() {
+  var filtered = expPeriod==='all' ? allExpenses : allExpenses.filter(function(e){ return inPeriod(e.expense_date, expPeriod); });
+
+  // Auto-generate staff costs from payroll
+  var staffCosts = [];
+  allWorkers.forEach(function(w) {
+    var completed = allJobs.filter(function(j){
+      return (j.workers||'').includes(w.name) && (j.status==='Completed'||j.status==='Fully Paid');
+    });
+    if (completed.length > 0 && w.daily_rate > 0) {
+      staffCosts.push({
+        id: 'staff-'+w.id,
+        expense_date: new Date().toISOString().split('T')[0],
+        category: 'staff',
+        description: w.name+' — '+completed.length+' jobs completed',
+        amount: completed.length * w.daily_rate,
+        auto: true
+      });
+    }
+  });
+
+  var allExp = staffCosts.concat(filtered);
+  var total = allExp.reduce(function(s,e){ return s+(e.amount||0); }, 0);
+
+  var catTotals = {};
+  allExp.forEach(function(e){
+    catTotals[e.category] = (catTotals[e.category]||0) + (e.amount||0);
+  });
+
+  var catLabels = {staff:'Staff Wages',materials:'Materials',equipment:'Equipment',transport:'Transport',food:'Staff Meals',utilities:'Utilities',marketing:'Marketing',other:'Other'};
+
+  document.getElementById('expStats').innerHTML =
+    '<div class="fin-stat"><div class="fin-stat-label">Total Expenses</div><div class="fin-stat-val red">'+fmtMoney(total)+'</div></div>'+
+    Object.keys(catTotals).map(function(cat){
+      return '<div class="fin-stat"><div class="fin-stat-label">'+(catLabels[cat]||cat)+'</div><div class="fin-stat-val">'+fmtMoney(catTotals[cat])+'</div></div>';
+    }).join('');
+
+  var tbody = document.getElementById('expTableBody');
+  if (!allExp.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-state">No expenses yet.</td></tr>'; return; }
+  tbody.innerHTML = allExp.map(function(e){
+    return '<tr>'+
+      '<td class="t-sub">'+(e.expense_date||'—')+'</td>'+
+      '<td><span class="badge b-submitted" style="font-size:11px">'+(catLabels[e.category]||e.category)+'</span></td>'+
+      '<td>'+e.description+(e.auto?' <span style="font-size:10px;color:var(--muted)">(auto)</span>':'')+'</td>'+
+      '<td><strong style="color:var(--red)">JMD '+Number(e.amount||0).toLocaleString()+'</strong></td>'+
+      '<td>'+(e.auto?'—':'<button class="act-btn blue" data-exp-id="'+e.id+'" onclick="openExpenseDrawer(this.dataset.expId)">Edit</button>')+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+window.openExpenseDrawer = function(id) {
+  var exp = id ? allExpenses.find(function(e){ return e.id===id; }) : null;
+  currentExpense = exp;
+  document.getElementById('expDrwTitle').textContent = exp ? 'Edit Expense' : 'Add Expense';
+  document.getElementById('expId').value       = exp ? exp.id : '';
+  document.getElementById('expDate').value     = exp ? exp.expense_date||'' : new Date().toISOString().split('T')[0];
+  document.getElementById('expCategory').value = exp ? exp.category||'other' : 'other';
+  document.getElementById('expDesc').value     = exp ? exp.description||'' : '';
+  document.getElementById('expAmount').value   = exp ? exp.amount||'' : '';
+  document.getElementById('expNotes').value    = exp ? exp.notes||'' : '';
+  document.getElementById('expDeleteBtn').style.display = exp ? 'flex' : 'none';
+  document.getElementById('expOverlay').classList.add('open');
+  document.getElementById('expDrawer').classList.add('open');
+};
+
+window.saveExpense = function() {
+  var desc   = document.getElementById('expDesc').value.trim();
+  var amount = parseFloat(document.getElementById('expAmount').value)||0;
+  if (!desc)    { showToast('Please enter a description', 'error'); return; }
+  if (!amount)  { showToast('Please enter an amount', 'error'); return; }
+  var data = {
+    expense_date: document.getElementById('expDate').value,
+    category:     document.getElementById('expCategory').value,
+    description:  desc,
+    amount:       amount,
+    notes:        document.getElementById('expNotes').value.trim()
+  };
+  var existingId = document.getElementById('expId').value;
+  var promise = existingId ? sbUpdate('expenses', existingId, data) : sbPost('expenses', data);
+  promise.then(function(result){
+    var saved = Array.isArray(result) ? result[0] : result;
+    if (existingId) {
+      var idx = allExpenses.findIndex(function(e){ return e.id===existingId; });
+      if (idx>=0) allExpenses[idx] = Object.assign({id:existingId}, data);
+    } else if (saved && saved.id) {
+      allExpenses.unshift(saved);
+    }
+    renderExpenses();
+    closeExpDrawer();
+    showToast(existingId ? 'Expense updated ✓' : 'Expense added ✓');
+  }).catch(function(){ showToast('Failed to save', 'error'); });
+};
+
+window.deleteExpense = function() {
+  if (!currentExpense) return;
+  if (!confirm('Delete this expense?')) return;
+  sbDelete('expenses', currentExpense.id).then(function(){
+    allExpenses = allExpenses.filter(function(e){ return e.id!==currentExpense.id; });
+    renderExpenses();
+    closeExpDrawer();
+    showToast('Expense deleted');
+  });
+};
+
+function closeExpDrawer() {
+  document.getElementById('expOverlay').classList.remove('open');
+  document.getElementById('expDrawer').classList.remove('open');
+  currentExpense = null;
+}
+try { document.getElementById('expOverlay').onclick = closeExpDrawer; } catch(e){}
+
+// ── SUMMARY ──
+function renderSummary() {
+  var now = new Date();
+  var months = [];
+  if (sumPeriod==='month') {
+    months = [{ year: now.getFullYear(), month: now.getMonth() }];
+  } else {
+    for (var m=0; m<12; m++) months.push({ year: now.getFullYear(), month: m });
+  }
+  var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var grandRev=0, grandExp=0;
+
+  var html = months.map(function(mo) {
+    var mStart = new Date(mo.year, mo.month, 1);
+    var mEnd   = new Date(mo.year, mo.month+1, 0, 23, 59, 59);
+
+    var mJobs = allJobs.filter(function(j){
+      var d = new Date(j.created_at);
+      return d>=mStart && d<=mEnd;
+    });
+
+    var mRevenue    = mJobs.reduce(function(s,j){ return s+(j.paid_amount||j.deposit||0); }, 0);
+    var mOutstanding= mJobs.reduce(function(s,j){ return s+Math.max(0,(j.amount||0)-(j.paid_amount||j.deposit||0)); }, 0);
+
+    var mExpenses = allExpenses.filter(function(e){
+      var d = new Date(e.expense_date);
+      return d>=mStart && d<=mEnd;
+    });
+
+    // Add staff costs for this month
+    var staffCost = 0;
+    allWorkers.forEach(function(w){
+      var completed = allJobs.filter(function(j){
+        var d=new Date(j.created_at);
+        return d>=mStart && d<=mEnd && (j.workers||'').includes(w.name) && (j.status==='Completed'||j.status==='Fully Paid');
+      });
+      staffCost += completed.length * (w.daily_rate||0);
+    });
+
+    var mExpTotal = mExpenses.reduce(function(s,e){ return s+(e.amount||0); }, 0) + staffCost;
+    var mNet = mRevenue - mExpTotal;
+    grandRev += mRevenue; grandExp += mExpTotal;
+
+    if (mRevenue===0 && mExpTotal===0 && mJobs.length===0) return '';
+
+    return '<div class="sum-month-block">'+
+      '<div class="sum-month-head"><span>'+monthNames[mo.month]+' '+mo.year+'</span><span>'+(mJobs.length)+' jobs</span></div>'+
+      '<div class="sum-month-body">'+
+        '<div class="sum-row-item"><span>Revenue Collected</span><span style="color:var(--green)">'+fmtMoney(mRevenue)+'</span></div>'+
+        '<div class="sum-row-item"><span>Outstanding</span><span style="color:var(--red)">'+fmtMoney(mOutstanding)+'</span></div>'+
+        '<div class="sum-row-item"><span>Staff Costs</span><span>'+fmtMoney(staffCost)+'</span></div>'+
+        '<div class="sum-row-item"><span>Other Expenses</span><span>'+fmtMoney(mExpenses.reduce(function(s,e){return s+(e.amount||0);},0))+'</span></div>'+
+        '<div class="sum-net"><span>Net Profit</span><span style="color:'+(mNet>=0?'var(--green)':'var(--red)')+'">'+fmtMoney(Math.abs(mNet))+(mNet<0?' (Loss)':'')+'</span></div>'+
+      '</div>'+
+    '</div>';
+  }).filter(Boolean).join('');
+
+  if (!html) html = '<div style="text-align:center;padding:3rem;color:var(--muted)">No data for this period yet.</div>';
+
+  // Grand total
+  var grandNet = grandRev - grandExp;
+  html += '<div class="sum-month-block">'+
+    '<div class="sum-month-head" style="background:#c9a84c;color:#1c1c1c"><span>TOTAL '+(sumPeriod==='year'?now.getFullYear():'THIS MONTH')+'</span></div>'+
+    '<div class="sum-month-body">'+
+      '<div class="sum-row-item"><span>Total Revenue</span><span style="color:var(--green);font-weight:700">'+fmtMoney(grandRev)+'</span></div>'+
+      '<div class="sum-row-item"><span>Total Expenses</span><span style="color:var(--red);font-weight:700">'+fmtMoney(grandExp)+'</span></div>'+
+      '<div class="sum-net"><span>NET PROFIT</span><span style="color:'+(grandNet>=0?'var(--green)':'var(--red)')+'">'+fmtMoney(Math.abs(grandNet))+(grandNet<0?' (Loss)':'')+'</span></div>'+
+    '</div>'+
+  '</div>';
+
+  document.getElementById('summaryContent').innerHTML = html;
+}
+
 // ── DISCOUNT ──
 window.applyDiscount = function() {
   if (!currentJob) return;
@@ -1917,7 +2423,7 @@ function initDashboard(){
     document.getElementById('tbTime').textContent=(hh>12?hh-12:hh||12)+':'+mm+(hh>=12?' PM':' AM');
   },1000);
 
-  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices()]).then(function(r){
+  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices(),loadExpenses()]).then(function(r){
     loadOverview(r[0]);
   });
 }
