@@ -476,6 +476,9 @@
 
       <!-- ══ JOBS (merged estimates + bookings) ══ -->
       <div class="panel" id="panel-jobs">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:0.8rem">
+          <button class="drw-btn dark" style="width:auto;padding:0.55rem 1.2rem" onclick="openNewJobDrawer()">+ Add Job</button>
+        </div>
         <div id="nextVisitBanner" style="display:none;background:var(--charcoal);border-radius:6px;padding:0.9rem 1.3rem;margin-bottom:1rem;align-items:center;gap:1rem;flex-wrap:wrap">
           <span style="font-size:1.3rem">📅</span>
           <div style="flex:1"><div style="font-size:0.85rem;color:#fff" id="nextVisitText">—</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.4);margin-top:2px" id="nextVisitSub">—</div></div>
@@ -501,6 +504,63 @@
             </table>
           </div>
           <div id="jobEmpty" class="empty-state" style="display:none">No jobs match your filter.</div>
+        </div>
+
+        <!-- New Job Drawer -->
+        <div class="overlay" id="newJobOverlay"></div>
+        <div class="drawer" id="newJobDrawer">
+          <div class="drw-head">
+            <div><div class="drw-title">Add New Job</div><div class="drw-ref">Created from admin</div></div>
+            <button class="drw-close" onclick="closeNewJobDrawer()">✕</button>
+          </div>
+          <div class="drw-body">
+            <div class="drw-note">📋 Use this to create a job for a customer you approached directly.</div>
+            <div class="drw-section"><div class="drw-sec-title">Customer Details</div>
+              <div class="field-group"><label class="field-label">Full Name</label><input class="field-input" id="nj-name" placeholder="e.g. John Brown" /></div>
+              <div class="sf-row">
+                <div class="field-group"><label class="field-label">Phone</label><input class="field-input" id="nj-phone" placeholder="876-XXX-XXXX" /></div>
+                <div class="field-group"><label class="field-label">Email</label><input class="field-input" id="nj-email" placeholder="email@example.com" /></div>
+              </div>
+              <div class="sf-row">
+                <div class="field-group"><label class="field-label">Parish</label>
+                  <select class="field-input" id="nj-parish">
+                    <option value="">Select parish...</option>
+                    <option>Kingston</option><option>St. Andrew</option><option>St. Thomas</option>
+                    <option>Portland</option><option>St. Mary</option><option>St. Ann</option>
+                    <option>Trelawny</option><option>St. James</option><option>Hanover</option>
+                    <option>Westmoreland</option><option>St. Elizabeth</option><option>Manchester</option>
+                    <option>Clarendon</option><option>St. Catherine</option>
+                  </select>
+                </div>
+                <div class="field-group"><label class="field-label">Property Type</label>
+                  <select class="field-input" id="nj-property">
+                    <option value="">Select type...</option>
+                    <option>Residential</option><option>Commercial</option><option>Industrial</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-group"><label class="field-label">Address</label><input class="field-input" id="nj-address" placeholder="Property address" /></div>
+            </div>
+            <div class="drw-section"><div class="drw-sec-title">Project Details</div>
+              <div class="field-group"><label class="field-label">Services Required</label><input class="field-input" id="nj-services" placeholder="e.g. Flat Ceiling, Partition Walls" /></div>
+              <div class="sf-row">
+                <div class="field-group"><label class="field-label">Estimated Amount (JMD)</label><input class="field-input" id="nj-amount" type="number" placeholder="e.g. 150000" /></div>
+                <div class="field-group"><label class="field-label">Site Visit Date</label><input class="field-input" id="nj-visit" type="date" /></div>
+              </div>
+              <div class="field-group"><label class="field-label">Notes</label><textarea class="field-input" id="nj-notes" rows="3" placeholder="Any additional details..."></textarea></div>
+            </div>
+            <div class="drw-section"><div class="drw-sec-title">Initial Status</div>
+              <select class="field-input" id="nj-status">
+                <option value="Submitted">Submitted</option>
+                <option value="Visit Scheduled">Visit Scheduled</option>
+                <option value="Deposit Pending">Deposit Pending</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:0.6rem;margin-top:1rem">
+              <button class="drw-btn dark" onclick="saveNewJob()">💾 Create Job</button>
+              <button class="drw-btn outline" onclick="closeNewJobDrawer()">Cancel</button>
+            </div>
+          </div>
         </div>
 
         <!-- Job Drawer -->
@@ -1058,7 +1118,8 @@ function renderJobs(){
   tbody.innerHTML=filtered.map(function(j,i){
     var opts=JOB_STATUSES.map(function(s){return '<option value="'+s+'"'+(s===j.status?' selected':'')+'>'+s+'</option>';}).join('');
     var workers=j.workers?j.workers.split(',').map(function(w){return '<span class="badge b-confirmed" style="margin:1px;font-size:0.6rem">'+w.trim()+'</span>';}).join(''):'<span style="color:var(--muted);font-size:0.75rem">—</span>';
-    return '<tr>'+
+    var rowStyle = (j.status==='Completed'||j.status==='Fully Paid') ? ' style="opacity:0.5"' : '';
+    return '<tr'+rowStyle+'>'+
       '<td><span class="t-ref">'+j.ref+'</span></td>'+
       '<td><div class="t-name">'+j.name+'</div><div class="t-sub">'+j.phone+'</div></td>'+
       '<td>'+(j.parish||'—')+'</td>'+
@@ -1112,6 +1173,7 @@ window.openJobDrawer=function(id){
   var job=allJobs.find(function(j){return j.id===id;});
   if(!job) return;
   currentJob=job;
+  var isLocked = job.status==='Completed'||job.status==='Fully Paid';
   document.getElementById('jobDrwTitle').textContent=job.name;
   document.getElementById('jobDrwRef').textContent=job.ref;
 
@@ -1125,6 +1187,7 @@ window.openJobDrawer=function(id){
   }).join('');
 
   document.getElementById('jobDrwBody').innerHTML=
+    (isLocked ? '<div style="background:#1c1c1c;color:#c9a84c;border-radius:4px;padding:0.75rem 1rem;font-size:0.8rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem">🔒 This job is '+job.status+' and has been archived. No changes can be made.</div>' : '')+
     '<div class="drw-note">📋 Submitted '+fmtDate(job.created_at)+'</div>'+
 
     '<div class="drw-section"><div class="drw-sec-title">Customer</div>'+
@@ -1159,17 +1222,41 @@ window.openJobDrawer=function(id){
 
     '<div class="drw-section"><div class="drw-sec-title">Assign Workers</div>'+
     (workerChecks||'<p style="font-size:0.8rem;color:var(--muted)">No active workers yet. Add workers in the Workers tab.</p>')+
-    '<button class="drw-btn dark" style="margin-top:0.8rem" onclick="saveWorkerAssignment()">💾 Save Assignment</button></div>'+
+    (!isLocked ? '<button class="drw-btn dark" style="margin-top:0.8rem" onclick="saveWorkerAssignment()">💾 Save Assignment</button>' : '<p style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">Archived — no changes allowed.</p>')+'</div>'+
 
-    '<div class="drw-section"><div class="drw-sec-title">Update Status</div>'+
+    (!isLocked ? '<div class="drw-section"><div class="drw-sec-title">Update Status</div>'+
     '<select class="drw-st-select" id="jobDrwSel">'+opts+'</select>'+
-    '<button class="drw-btn dark" onclick="saveJobStatus()">💾 Save Status</button></div>'+
+    '<button class="drw-btn dark" onclick="saveJobStatus()">💾 Save Status</button></div>' : '')+
+    ''+
+    ''+
+
+    (!isLocked ? '<div class="drw-section"><div class="drw-sec-title">💳 Record Payment</div>' : '<div style="display:none">')+
+    ''+
+    '<div class="drw-row"><span class="drw-lbl">Job Total</span><span class="drw-val">'+fmtMoney(job.amount)+'</span></div>'+
+    '<div class="drw-row"><span class="drw-lbl">Required Deposit (50%)</span><span class="drw-val">'+(job.deposit>0?'JMD '+Number(job.deposit).toLocaleString():'—')+'</span></div>'+
+    '<div class="drw-row"><span class="drw-lbl">Total Paid So Far</span><span class="drw-val" style="color:var(--green);font-weight:600">'+(job.amount_paid>0?'JMD '+Number(job.amount_paid).toLocaleString():'Nothing recorded yet')+'</span></div>'+
+    '<div class="drw-row"><span class="drw-lbl">Outstanding</span><span class="drw-val" style="color:'+(job.amount_paid>=job.amount?'var(--green)':'var(--red)')+'">'+(job.amount>0?'JMD '+Math.max(0,job.amount-(job.amount_paid||0)).toLocaleString():'—')+'</span></div>'+
+    '<div style="margin-top:0.8rem">'+
+    '<label class="field-label" style="display:block;margin-bottom:0.3rem">Amount Being Paid (JMD)</label>'+
+    '<input class="field-input" id="payAmountInput" type="number" placeholder="e.g. 48000" style="margin-bottom:0.6rem" />'+
+    '<label class="field-label" style="display:block;margin-bottom:0.3rem">Payment Method</label>'+
+    '<select class="field-input" id="payMethodInput" style="margin-bottom:0.6rem">'+
+    '<option value="Bank Transfer">Bank Transfer</option>'+
+    '<option value="Cash">Cash</option>'+
+    '<option value="Cheque">Cheque</option>'+
+    '<option value="Other">Other</option>'+
+    '</select>'+
+    '<label class="field-label" style="display:block;margin-bottom:0.3rem">Payment Notes (optional)</label>'+
+    '<input class="field-input" id="payNotesInput" placeholder="e.g. Paid in full, receipt #123" style="margin-bottom:0.8rem" />'+
+    '<button class="drw-btn green" onclick="recordPayment()">💰 Record Payment</button>'+
+    '</div></div>'+
 
     '<div class="drw-section"><div class="drw-sec-title">Actions</div>'+
     '<div style="display:flex;gap:0.6rem;flex-wrap:wrap">'+
     '<button class="drw-btn green" onclick="openEmailModal()">📧 Email Customer</button>'+
     '<button class="drw-btn outline" onclick="openInvoiceModal(currentJob)">🧾 Generate Invoice</button>'+
     '<button class="drw-btn outline" onclick="closeJobDrawer()">Close</button>'+
+    '<button class="drw-btn outline" style="color:var(--red);border-color:var(--red)" onclick="deleteJob()">🗑 Delete Job</button>'+
     '</div></div>';
 
   document.getElementById('jobOverlay').classList.add('open');
@@ -2079,7 +2166,8 @@ function renderRevenue() {
     var payBadge = j.payment_confirmed
       ? '<span class="badge b-confirmed">Paid</span>'
       : (paid>0 ? '<span class="badge b-pending">Partial</span>' : '<span class="badge b-submitted">Unpaid</span>');
-    return '<tr>'+
+    var rowStyle = (j.status==='Completed'||j.status==='Fully Paid') ? ' style="opacity:0.5"' : '';
+    return '<tr'+rowStyle+'>'+
       '<td><span class="t-ref">'+j.ref+'</span></td>'+
       '<td><div class="t-name">'+j.name+'</div><div class="t-sub">'+j.parish+'</div></td>'+
       '<td><strong>'+fmtMoney(j.amount)+'</strong></td>'+
@@ -2091,6 +2179,83 @@ function renderRevenue() {
     '</tr>';
   }).join('');
 }
+
+
+
+// ── ADD NEW JOB FROM ADMIN ──
+window.openNewJobDrawer = function() {
+  // Clear all fields
+  ['nj-name','nj-phone','nj-email','nj-address','nj-services','nj-notes'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  ['nj-parish','nj-property'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var amtEl = document.getElementById('nj-amount'); if (amtEl) amtEl.value = '';
+  var visitEl = document.getElementById('nj-visit'); if (visitEl) visitEl.value = '';
+  var statusEl = document.getElementById('nj-status'); if (statusEl) statusEl.value = 'Submitted';
+  document.getElementById('newJobOverlay').classList.add('open');
+  document.getElementById('newJobDrawer').classList.add('open');
+};
+
+function closeNewJobDrawer() {
+  document.getElementById('newJobOverlay').classList.remove('open');
+  document.getElementById('newJobDrawer').classList.remove('open');
+}
+try { document.getElementById('newJobOverlay').onclick = closeNewJobDrawer; } catch(e) {}
+
+window.saveNewJob = function() {
+  var name = document.getElementById('nj-name').value.trim();
+  if (!name) { showToast('Please enter a customer name', 'error'); return; }
+
+  var amount  = parseFloat(document.getElementById('nj-amount').value) || 0;
+  var deposit = Math.round(amount * 0.5);
+
+  // Generate ref
+  var ref = 'PI-' + Math.floor(100000 + Math.random() * 900000);
+
+  var data = {
+    ref:           ref,
+    name:          name,
+    phone:         document.getElementById('nj-phone').value.trim(),
+    email:         document.getElementById('nj-email').value.trim(),
+    parish:        document.getElementById('nj-parish').value,
+    property_type: document.getElementById('nj-property').value,
+    address:       document.getElementById('nj-address').value.trim(),
+    services:      document.getElementById('nj-services').value.trim(),
+    amount:        amount,
+    deposit:       deposit,
+    visit_date:    document.getElementById('nj-visit').value,
+    notes:         document.getElementById('nj-notes').value.trim(),
+    status:        document.getElementById('nj-status').value,
+    amount_paid:   0,
+    created_at:    new Date().toISOString()
+  };
+
+  sbPost('estimates', data).then(function(result) {
+    var saved = Array.isArray(result) ? result[0] : result;
+    if (saved && saved.id) allJobs.unshift(saved);
+    renderJobs();
+    updateJobCounts();
+    closeNewJobDrawer();
+    showToast('Job ' + ref + ' created ✓');
+    // Open the new job drawer straight away
+    if (saved && saved.id) setTimeout(function(){ openJobDrawer(saved.id); }, 300);
+  }).catch(function() { showToast('Failed to create job', 'error'); });
+};
+
+// ── DELETE JOB ──
+window.deleteJob = function() {
+  if (!currentJob) return;
+  if (!confirm('Delete job ' + currentJob.ref + ' for ' + currentJob.name + '?\n\nThis cannot be undone.')) return;
+  sbDelete('estimates', currentJob.id).then(function() {
+    allJobs = allJobs.filter(function(j) { return j.id !== currentJob.id; });
+    renderJobs();
+    updateJobCounts();
+    closeJobDrawer();
+    showToast('Job ' + currentJob.ref + ' deleted');
+  }).catch(function() { showToast('Failed to delete job', 'error'); });
+};
 
 // ── RECORD PAYMENT ──
 window.openPayDrawer = function(jobId) {
@@ -2344,6 +2509,129 @@ function renderSummary() {
 
   document.getElementById('summaryContent').innerHTML = html;
 }
+
+
+
+
+// ── ADD NEW JOB FROM ADMIN ──
+window.openNewJobDrawer = function() {
+  // Clear all fields
+  ['nj-name','nj-phone','nj-email','nj-address','nj-services','nj-notes'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  ['nj-parish','nj-property'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var amtEl = document.getElementById('nj-amount'); if (amtEl) amtEl.value = '';
+  var visitEl = document.getElementById('nj-visit'); if (visitEl) visitEl.value = '';
+  var statusEl = document.getElementById('nj-status'); if (statusEl) statusEl.value = 'Submitted';
+  document.getElementById('newJobOverlay').classList.add('open');
+  document.getElementById('newJobDrawer').classList.add('open');
+};
+
+function closeNewJobDrawer() {
+  document.getElementById('newJobOverlay').classList.remove('open');
+  document.getElementById('newJobDrawer').classList.remove('open');
+}
+try { document.getElementById('newJobOverlay').onclick = closeNewJobDrawer; } catch(e) {}
+
+window.saveNewJob = function() {
+  var name = document.getElementById('nj-name').value.trim();
+  if (!name) { showToast('Please enter a customer name', 'error'); return; }
+
+  var amount  = parseFloat(document.getElementById('nj-amount').value) || 0;
+  var deposit = Math.round(amount * 0.5);
+
+  // Generate ref
+  var ref = 'PI-' + Math.floor(100000 + Math.random() * 900000);
+
+  var data = {
+    ref:           ref,
+    name:          name,
+    phone:         document.getElementById('nj-phone').value.trim(),
+    email:         document.getElementById('nj-email').value.trim(),
+    parish:        document.getElementById('nj-parish').value,
+    property_type: document.getElementById('nj-property').value,
+    address:       document.getElementById('nj-address').value.trim(),
+    services:      document.getElementById('nj-services').value.trim(),
+    amount:        amount,
+    deposit:       deposit,
+    visit_date:    document.getElementById('nj-visit').value,
+    notes:         document.getElementById('nj-notes').value.trim(),
+    status:        document.getElementById('nj-status').value,
+    amount_paid:   0,
+    created_at:    new Date().toISOString()
+  };
+
+  sbPost('estimates', data).then(function(result) {
+    var saved = Array.isArray(result) ? result[0] : result;
+    if (saved && saved.id) allJobs.unshift(saved);
+    renderJobs();
+    updateJobCounts();
+    closeNewJobDrawer();
+    showToast('Job ' + ref + ' created ✓');
+    // Open the new job drawer straight away
+    if (saved && saved.id) setTimeout(function(){ openJobDrawer(saved.id); }, 300);
+  }).catch(function() { showToast('Failed to create job', 'error'); });
+};
+
+// ── DELETE JOB ──
+window.deleteJob = function() {
+  if (!currentJob) return;
+  if (!confirm('Delete job ' + currentJob.ref + ' for ' + currentJob.name + '?\n\nThis cannot be undone.')) return;
+  sbDelete('estimates', currentJob.id).then(function() {
+    allJobs = allJobs.filter(function(j) { return j.id !== currentJob.id; });
+    renderJobs();
+    updateJobCounts();
+    closeJobDrawer();
+    showToast('Job ' + currentJob.ref + ' deleted');
+  }).catch(function() { showToast('Failed to delete job', 'error'); });
+};
+
+// ── RECORD PAYMENT ──
+window.recordPayment = function() {
+  if (!currentJob) return;
+  if (currentJob.status==='Completed'||currentJob.status==='Fully Paid') { showToast('This job is archived — no changes allowed', 'error'); return; }
+  var amt   = parseFloat(document.getElementById('payAmountInput').value) || 0;
+  var method = document.getElementById('payMethodInput').value;
+  var notes = document.getElementById('payNotesInput').value.trim();
+  if (amt <= 0) { showToast('Please enter an amount', 'error'); return; }
+
+  var newPaid = (parseFloat(currentJob.amount_paid) || 0) + amt;
+  var newStatus = currentJob.status;
+
+  // Auto update status based on payment
+  if (newPaid >= currentJob.amount) {
+    newStatus = 'Fully Paid';
+  } else if (newPaid >= currentJob.deposit) {
+    newStatus = 'Deposit Confirmed';
+  }
+
+  var paymentNote = (new Date().toLocaleDateString()) + ' — JMD ' + amt.toLocaleString() + ' via ' + method + (notes ? ' (' + notes + ')' : '');
+  var existingNotes = currentJob.payment_notes ? currentJob.payment_notes + '\n' + paymentNote : paymentNote;
+
+  sbUpdate('estimates', currentJob.id, {
+    amount_paid:    newPaid,
+    payment_method: method,
+    payment_notes:  existingNotes,
+    status:         newStatus
+  }).then(function() {
+    currentJob.amount_paid    = newPaid;
+    currentJob.payment_method = method;
+    currentJob.payment_notes  = existingNotes;
+    currentJob.status         = newStatus;
+    renderJobs();
+    updateJobCounts();
+    showToast('Payment of JMD ' + amt.toLocaleString() + ' recorded ✓');
+    if (newStatus === 'Fully Paid') {
+      closeJobDrawer();
+      openInvoiceModal(currentJob);
+    } else {
+      // Refresh drawer to show updated totals
+      openJobDrawer(currentJob.id);
+    }
+  }).catch(function() { showToast('Failed to record payment', 'error'); });
+};
 
 // ── DISCOUNT ──
 window.applyDiscount = function() {
