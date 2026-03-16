@@ -318,6 +318,29 @@
     .img-save-btn:hover{background:#2a2a2a}
     .img-reset-btn{padding:0.5rem 0.7rem;background:none;border:1.5px solid var(--border);border-radius:4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;cursor:pointer;color:var(--muted)}
     .img-reset-btn:hover{border-color:var(--red);color:var(--red)}
+
+    /* SERVICES MANAGER */
+    .services-mgr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+    .svc-card{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+    .svc-card.hidden-svc{opacity:0.6}
+    .svc-card-img{height:160px;background:#1a1a1a;position:relative;overflow:hidden;flex-shrink:0}
+    .svc-card-img img{width:100%;height:100%;object-fit:cover;display:block}
+    .svc-card-img .svc-no-img{display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.15);font-size:2.5rem}
+    .svc-card-badge-wrap{position:absolute;top:0.6rem;left:0.6rem;display:flex;gap:0.4rem;flex-wrap:wrap}
+    .svc-status-dot{position:absolute;top:0.6rem;right:0.6rem;width:10px;height:10px;border-radius:50%;border:2px solid #fff}
+    .svc-status-dot.active{background:var(--green)}
+    .svc-status-dot.hidden-dot{background:#aaa}
+    .svc-card-body{padding:1rem;flex:1;display:flex;flex-direction:column;gap:0.3rem}
+    .svc-card-name{font-weight:700;font-size:14px;color:var(--charcoal)}
+    .svc-card-cat{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted)}
+    .svc-card-price{font-size:13px;color:var(--charcoal);font-weight:600;margin-top:0.2rem}
+    .svc-card-cost{font-size:11px;color:var(--muted)}
+    .svc-card-actions{display:flex;gap:0.4rem;margin-top:0.6rem}
+    .svc-toggle{display:flex;align-items:center;gap:0.4rem;font-size:12px;cursor:pointer;margin-top:0.4rem}
+    .svc-toggle-switch{width:36px;height:20px;border-radius:10px;background:#ddd;position:relative;transition:background 0.2s;flex-shrink:0}
+    .svc-toggle-switch.on{background:var(--green)}
+    .svc-toggle-switch::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left 0.2s}
+    .svc-toggle-switch.on::after{left:19px}
   </style>
 </head>
 <body>
@@ -565,7 +588,80 @@
 
       <!-- ══ COMING SOON ══ -->
       <div class="panel" id="panel-payments"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">🏦</div><div class="cs-title">Payments Manager</div><p class="cs-desc">Review deposit submissions, view proof of payment, approve or reject deposits.</p></div></div>
-      <div class="panel" id="panel-services"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">🔧</div><div class="cs-title">Services Manager</div><p class="cs-desc">Add, edit and reorder your services. Update pricing and descriptions.</p></div></div>
+            <!-- ══ SERVICES MANAGER ══ -->
+      <div class="panel" id="panel-services">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.6rem">
+          <div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--charcoal)">Services Manager</div>
+            <p style="font-size:13px;color:var(--muted);margin-top:0.2rem">Add, edit and manage your services. Toggle Active to push live to the website.</p>
+          </div>
+          <button class="drw-btn dark" style="width:auto;padding:0.6rem 1.2rem" onclick="openServiceDrawer(null)">+ Add Service</button>
+        </div>
+        <div class="filter-bar" style="margin-bottom:1rem">
+          <div class="filter-tabs" id="svcFilterTabs">
+            <button class="ftab active" data-sf="all">All <span class="ftab-count" id="sfc-all">0</span></button>
+            <button class="ftab" data-sf="ceiling">Ceilings <span class="ftab-count" id="sfc-ceiling">0</span></button>
+            <button class="ftab" data-sf="drywall">Drywall <span class="ftab-count" id="sfc-drywall">0</span></button>
+            <button class="ftab" data-sf="finishing">Finishing <span class="ftab-count" id="sfc-finishing">0</span></button>
+            <button class="ftab" data-sf="active">Live <span class="ftab-count" id="sfc-active">0</span></button>
+            <button class="ftab" data-sf="hidden">Hidden <span class="ftab-count" id="sfc-hidden">0</span></button>
+          </div>
+          <input type="text" class="search-input" id="svcSearch" placeholder="🔍  Search services..." />
+        </div>
+        <div class="services-mgr-grid" id="servicesMgrGrid">
+          <div class="loading"><span class="spinner"></span>Loading...</div>
+        </div>
+        <!-- Service Drawer -->
+        <div class="overlay" id="svcOverlay"></div>
+        <div class="drawer" id="svcDrawer">
+          <div class="drw-head">
+            <div><div class="drw-title" id="svcDrwTitle">Add Service</div></div>
+            <button class="drw-close" onclick="closeSvcDrawer()">✕</button>
+          </div>
+          <div class="drw-body">
+            <input type="hidden" id="svcId" />
+            <div class="field-group"><label class="field-label">Service Name</label><input class="field-input" id="svcName" placeholder="e.g. Flat Ceiling Installation" /></div>
+            <div class="field-group"><label class="field-label">Category</label>
+              <select class="field-input" id="svcCategory">
+                <option value="ceiling">Ceiling</option>
+                <option value="drywall">Drywall</option>
+                <option value="finishing">Finishing</option>
+              </select>
+            </div>
+            <div class="field-group"><label class="field-label">Description</label><textarea class="field-input" id="svcDesc" rows="3" placeholder="What does this service include?"></textarea></div>
+            <div class="sf-row">
+              <div class="field-group"><label class="field-label">Selling Price</label><input class="field-input" id="svcPrice" placeholder="e.g. JMD $300/sq ft" /></div>
+              <div class="field-group"><label class="field-label">Cost Price (Admin Only)</label><input class="field-input" id="svcCost" type="number" placeholder="e.g. 15000" /></div>
+            </div>
+            <div class="field-group"><label class="field-label">Features (one per line)</label><textarea class="field-input" id="svcFeatures" rows="4" placeholder="e.g.&#10;Residential & commercial&#10;Smooth or textured finish&#10;Paint-ready"></textarea></div>
+            <div class="field-group"><label class="field-label">Badge (optional)</label><input class="field-input" id="svcBadge" placeholder="e.g. Most Popular, Best Value, Luxury" /></div>
+            <div class="field-group"><label class="field-label">Photo URL</label>
+              <input class="field-input" id="svcPhoto" placeholder="Paste image URL here..." />
+              <div id="svcPhotoPreview" style="margin-top:0.5rem;height:120px;background:#1a1a1a;border-radius:4px;overflow:hidden;display:none">
+                <img id="svcPhotoImg" style="width:100%;height:100%;object-fit:cover" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Status</label>
+              <div style="display:flex;align-items:center;gap:1rem;margin-top:0.3rem">
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:14px">
+                  <input type="radio" name="svcStatus" id="svcStatusActive" value="active"> 
+                  <span style="color:var(--green);font-weight:600">● Active (Live on website)</span>
+                </label>
+                <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:14px">
+                  <input type="radio" name="svcStatus" id="svcStatusHidden" value="hidden" checked>
+                  <span style="color:var(--muted)">○ Hidden (Draft)</span>
+                </label>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.6rem;margin-top:1rem;flex-wrap:wrap">
+              <button class="drw-btn dark" onclick="saveService()">💾 Save Service</button>
+              <button class="drw-btn outline" style="color:var(--red);border-color:var(--red)" id="svcDeleteBtn" onclick="deleteService()" style="display:none">🗑 Delete</button>
+              <button class="drw-btn outline" onclick="closeSvcDrawer()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <!-- ══ IMAGES ══ -->
       <div class="panel" id="panel-gallery">
         <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--charcoal);margin-bottom:0.3rem">Site Images</div>
@@ -728,7 +824,7 @@ document.getElementById('logoutBtn').onclick=function(){
 };
 
 // ── PANEL SWITCHING ──
-var panelNames={overview:'Overview',jobs:'Jobs',workers:'Workers',payroll:'Payroll',payments:'Payments',services:'Services',gallery:'Site Images',marketing:'Marketing',settings:'Settings'};
+var panelNames={overview:'Overview',jobs:'Jobs',workers:'Workers',payroll:'Payroll',payments:'Payments',services:'Services Manager',gallery:'Site Images',marketing:'Marketing',settings:'Settings'};
 function switchPanel(name){
   document.querySelectorAll('.nav-item').forEach(function(el){el.classList.toggle('active',el.dataset.panel===name);});
   document.querySelectorAll('.panel').forEach(function(el){el.classList.remove('active');});
@@ -738,6 +834,7 @@ function switchPanel(name){
   document.getElementById('content').scrollTop=0;
   if(name==='payroll') renderPayroll();
   if(name==='gallery') renderImagesGrid();
+  if(name==='services') { renderServicesGrid(); updateSvcCounts(); }
 }
 document.querySelectorAll('.nav-item').forEach(function(el){
   el.onclick=function(){if(el.dataset.panel) switchPanel(el.dataset.panel);};
@@ -757,7 +854,7 @@ var jobFilter='all', jobSearch='', currentJob=null, currentWorker=null;
 
 function refreshData(){
   showToast('Refreshing...','success');
-  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages()]).then(function(r){
+  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices()]).then(function(r){
     loadOverview(r[0]);
     showToast('Data refreshed ✓');
   });
@@ -1344,6 +1441,219 @@ document.addEventListener('input', function(e) {
 });
 
 
+
+// ── SERVICES MANAGER ──
+var allServices = [];
+var svcFilter = 'all';
+var svcSearch = '';
+var currentService = null;
+
+function loadServices() {
+  return sbGet('services').then(function(data) {
+    allServices = Array.isArray(data) ? data : [];
+    renderServicesGrid();
+    updateSvcCounts();
+    return allServices;
+  }).catch(function() { allServices = []; renderServicesGrid(); return []; });
+}
+
+function updateSvcCounts() {
+  var counts = {all:allServices.length, ceiling:0, drywall:0, finishing:0, active:0, hidden:0};
+  allServices.forEach(function(s) {
+    if (counts[s.category] !== undefined) counts[s.category]++;
+    if (s.status === 'active') counts.active++; else counts.hidden++;
+  });
+  document.getElementById('sfc-all').textContent      = counts.all;
+  document.getElementById('sfc-ceiling').textContent  = counts.ceiling;
+  document.getElementById('sfc-drywall').textContent  = counts.drywall;
+  document.getElementById('sfc-finishing').textContent= counts.finishing;
+  document.getElementById('sfc-active').textContent   = counts.active;
+  document.getElementById('sfc-hidden').textContent   = counts.hidden;
+}
+
+function renderServicesGrid() {
+  var grid = document.getElementById('servicesMgrGrid');
+  if (!grid) return;
+  var q = svcSearch.toLowerCase();
+  var filtered = allServices.filter(function(s) {
+    var mf = svcFilter === 'all' || s.category === svcFilter || 
+             (svcFilter === 'active' && s.status === 'active') ||
+             (svcFilter === 'hidden' && s.status !== 'active');
+    var mq = !q || (s.name||'').toLowerCase().includes(q) || (s.category||'').toLowerCase().includes(q);
+    return mf && mq;
+  });
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted)">No services found. Click <strong>+ Add Service</strong> to get started.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(function(s) {
+    var isActive = s.status === 'active';
+    var catLabel = {ceiling:'Ceiling', drywall:'Drywall', finishing:'Finishing'}[s.category] || s.category;
+    var imgHtml = s.photo_url ? '<img src="'+s.photo_url+'" onerror="this.style.display=this.style.display" />' : '<div class="svc-no-img">🔧</div>';
+    var badgeHtml = s.badge ? '<span class="badge b-confirmed" style="font-size:10px">'+s.badge+'</span>' : '';
+    return '<div class="svc-card '+(isActive?'':'hidden-svc')+'" data-svc-id="'+s.id+'">'+
+      '<div class="svc-card-img">'+imgHtml+
+        '<div class="svc-card-badge-wrap">'+badgeHtml+'</div>'+
+        '<div class="svc-status-dot '+(isActive?'active':'hidden-dot')+'" title="'+(isActive?'Live':'Hidden')+'"></div>'+
+      '</div>'+
+      '<div class="svc-card-body">'+
+        '<div class="svc-card-cat">'+catLabel+'</div>'+
+        '<div class="svc-card-name">'+s.name+'</div>'+
+        '<div class="svc-card-price">'+(s.price||'Price on request')+'</div>'+
+        '<div class="svc-card-cost">Cost: '+(s.cost_price>0?'JMD '+Number(s.cost_price).toLocaleString():'—')+'</div>'+
+        '<div class="svc-toggle svc-toggle-btn" data-svc-id="'+s.id+'" data-svc-status="'+s.status+'">'+
+          '<div class="svc-toggle-switch '+(isActive?'on':'')+'"></div>'+
+          '<span style="color:'+(isActive?'var(--green)':'var(--muted)')+'">'+( isActive?'Live':'Hidden')+'</span>'+
+        '</div>'+
+        '<div class="svc-card-actions">'+
+          '<button class="act-btn blue svc-edit-btn" data-svc-id="'+s.id+'">Edit</button>'+
+          '<button class="act-btn svc-del-btn" style="color:var(--red);border-color:var(--red)" data-svc-id="'+s.id+'" data-svc-name="'+s.name+'">Delete</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  // Attach events via delegation
+  grid.querySelectorAll('.svc-edit-btn').forEach(function(btn){
+    btn.onclick = function(){ openServiceDrawer(btn.dataset.svcId); };
+  });
+  grid.querySelectorAll('.svc-del-btn').forEach(function(btn){
+    btn.onclick = function(){ confirmDeleteService(btn.dataset.svcId, btn.dataset.svcName); };
+  });
+  grid.querySelectorAll('.svc-toggle-btn').forEach(function(el){
+    el.onclick = function(){ toggleServiceStatus(el.dataset.svcId, el.dataset.svcStatus); };
+  });
+}
+
+window.toggleServiceStatus = function(id, currentStatus) {
+  var newStatus = currentStatus === 'active' ? 'hidden' : 'active';
+  sbUpdate('services', id, {status: newStatus}).then(function() {
+    var svc = allServices.find(function(s) { return s.id === id; });
+    if (svc) svc.status = newStatus;
+    renderServicesGrid();
+    updateSvcCounts();
+    // Also sync to site_images
+    syncServiceToImages(allServices.find(function(s){return s.id===id;}));
+    showToast(newStatus === 'active' ? 'Service is now Live ✓' : 'Service hidden from website');
+  }).catch(function() { showToast('Failed to update', 'error'); });
+};
+
+window.openServiceDrawer = function(id) {
+  var svc = id ? allServices.find(function(s) { return s.id === id; }) : null;
+  currentService = svc;
+  document.getElementById('svcDrwTitle').textContent = svc ? 'Edit Service' : 'Add Service';
+  document.getElementById('svcId').value       = svc ? svc.id : '';
+  document.getElementById('svcName').value     = svc ? svc.name||'' : '';
+  document.getElementById('svcCategory').value = svc ? svc.category||'ceiling' : 'ceiling';
+  document.getElementById('svcDesc').value     = svc ? svc.description||'' : '';
+  document.getElementById('svcPrice').value    = svc ? svc.price||'' : '';
+  document.getElementById('svcCost').value     = svc ? svc.cost_price||'' : '';
+  document.getElementById('svcFeatures').value = svc ? (svc.features||[]).join('\n') : '';
+  document.getElementById('svcBadge').value    = svc ? svc.badge||'' : '';
+  document.getElementById('svcPhoto').value    = svc ? svc.photo_url||'' : '';
+  document.getElementById('svcDeleteBtn').style.display = svc ? 'flex' : 'none';
+  // Set status radio
+  var isActive = svc && svc.status === 'active';
+  document.getElementById('svcStatusActive').checked = isActive;
+  document.getElementById('svcStatusHidden').checked = !isActive;
+  // Photo preview
+  updateSvcPhotoPreview(svc ? svc.photo_url||'' : '');
+  document.getElementById('svcOverlay').classList.add('open');
+  document.getElementById('svcDrawer').classList.add('open');
+};
+
+function updateSvcPhotoPreview(url) {
+  var wrap = document.getElementById('svcPhotoPreview');
+  var img  = document.getElementById('svcPhotoImg');
+  if (url) { wrap.style.display='block'; img.src=url; } 
+  else { wrap.style.display='none'; }
+}
+
+try {
+  document.getElementById('svcPhoto').oninput = function() { updateSvcPhotoPreview(this.value); };
+  document.getElementById('svcOverlay').onclick = closeSvcDrawer;
+} catch(e) {}
+
+document.querySelectorAll('#svcFilterTabs .ftab').forEach(function(btn) {
+  btn.onclick = function() {
+    document.querySelectorAll('#svcFilterTabs .ftab').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active'); svcFilter = btn.dataset.sf; renderServicesGrid();
+  };
+});
+try { document.getElementById('svcSearch').oninput = function(){svcSearch=this.value;renderServicesGrid();}; } catch(e){}
+
+window.saveService = function() {
+  var name = document.getElementById('svcName').value.trim();
+  if (!name) { showToast('Please enter a service name', 'error'); return; }
+  var features = document.getElementById('svcFeatures').value.trim().split('\n').filter(Boolean);
+  var status = document.querySelector('input[name="svcStatus"]:checked').value;
+  var data = {
+    name:        name,
+    category:    document.getElementById('svcCategory').value,
+    description: document.getElementById('svcDesc').value.trim(),
+    price:       document.getElementById('svcPrice').value.trim(),
+    cost_price:  parseFloat(document.getElementById('svcCost').value)||0,
+    features:    features,
+    badge:       document.getElementById('svcBadge').value.trim(),
+    photo_url:   document.getElementById('svcPhoto').value.trim(),
+    status:      status,
+    updated_at:  new Date().toISOString()
+  };
+  var existingId = document.getElementById('svcId').value;
+  var promise = existingId ? sbUpdate('services', existingId, data) : sbPost('services', data);
+  promise.then(function(result) {
+    var saved = Array.isArray(result) ? result[0] : result;
+    if (existingId) {
+      var idx = allServices.findIndex(function(s){return s.id===existingId;});
+      if (idx>=0) allServices[idx] = Object.assign({id:existingId}, data);
+    } else {
+      if (saved && saved.id) allServices.unshift(saved);
+    }
+    renderServicesGrid(); updateSvcCounts();
+    // Sync photo to images tab
+    syncServiceToImages(saved || Object.assign({id:existingId}, data));
+    closeSvcDrawer();
+    showToast(existingId ? 'Service updated ✓' : 'Service added ✓');
+  }).catch(function() { showToast('Failed to save service', 'error'); });
+};
+
+window.confirmDeleteService = function(id, name) {
+  if (!confirm('Delete "'+name+'"? This cannot be undone.')) return;
+  sbDelete('services', id).then(function() {
+    allServices = allServices.filter(function(s){return s.id!==id;});
+    renderServicesGrid(); updateSvcCounts();
+    showToast(name + ' deleted');
+  });
+};
+
+window.deleteService = function() {
+  if (!currentService) return;
+  confirmDeleteService(currentService.id, currentService.name);
+  closeSvcDrawer();
+};
+
+function closeSvcDrawer() {
+  document.getElementById('svcOverlay').classList.remove('open');
+  document.getElementById('svcDrawer').classList.remove('open');
+  currentService = null;
+}
+
+// Sync service photo to site_images so it appears in Images tab
+function syncServiceToImages(svc) {
+  if (!svc || !svc.name) return;
+  var imgId = 'svc-' + (svc.id||'').toString().substring(0,8);
+  var data = { id: imgId, url: svc.photo_url||'', label: svc.name, updated_at: new Date().toISOString() };
+  sbUpsert('site_images', data).then(function() {
+    // Refresh images tab if open
+    if (document.getElementById('panel-gallery').classList.contains('active')) {
+      loadSiteImages().then(renderImagesGrid);
+    }
+    // Also add to local array
+    var existing = allSiteImages.find(function(i){return i.id===imgId;});
+    if (existing) existing.url = svc.photo_url||'';
+    else allSiteImages.push(data);
+  }).catch(function(){});
+}
+
 // ── DISCOUNT ──
 window.applyDiscount = function() {
   if (!currentJob) return;
@@ -1422,7 +1732,7 @@ function initDashboard(){
     document.getElementById('tbTime').textContent=(hh>12?hh-12:hh||12)+':'+mm+(hh>=12?' PM':' AM');
   },1000);
 
-  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages()]).then(function(r){
+  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices()]).then(function(r){
     loadOverview(r[0]);
   });
 }
