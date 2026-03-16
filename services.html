@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Services | P&I Finishings Jamaica</title>
+  <meta name="description" content="P&I Finishings offers premium drywall, tray ceilings, flat ceilings, partition walls, built-in shelves and painting services across Jamaica." />
+  <meta name="keywords" content="drywall Jamaica, tray ceiling Kingston, flat ceiling Jamaica, partition walls Jamaica, painting contractor Jamaica" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --white:#fff;--off-white:#f9f7f4;--charcoal:#1c1c1c;--charcoal-2:#2e2e2e;
+      --gold:#c9a84c;--gold-light:#e8d090;--gold-pale:#faf4e1;
+      --muted:#888078;--border:#e8e2d8;--text:#2a2a2a;
+      --green:#2d6a4f;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Outfit',sans-serif;background:var(--white);color:var(--text);overflow-x:hidden}
+
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 4%;background:rgba(255,255,255,0.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);transition:box-shadow 0.3s}
+    nav.scrolled{box-shadow:0 2px 20px rgba(0,0,0,0.08)}
+    .nav-logo{display:flex;flex-direction:column;line-height:1;text-decoration:none}
+    .nav-logo-main{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--charcoal);letter-spacing:0.02em}
+    .nav-logo-main span{color:var(--gold)}
+    .nav-logo-sub{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+    .nav-links{display:flex;align-items:center;gap:2.5rem;list-style:none}
+    .nav-links a{text-decoration:none;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--charcoal);font-weight:500;transition:color 0.2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--gold)}
+    .nav-cta{background:var(--charcoal)!important;color:var(--white)!important;padding:0.55rem 1.3rem;border-radius:2px;transition:background 0.2s!important}
+    .nav-cta:hover{background:var(--gold)!important;color:var(--charcoal)!important}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+    .nav-hamburger span{display:block;width:24px;height:2px;background:var(--charcoal);transition:all 0.3s}
+
+    /* MOBILE NAV */
+    .mobile-nav{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--charcoal);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:2rem}
+    .mobile-nav.open{display:flex}
+    .mobile-nav a{font-family:'Cormorant Garamond',serif;font-size:2rem;color:#fff;text-decoration:none;font-weight:600;transition:color 0.2s}
+    .mobile-nav a:hover{color:var(--gold)}
+    .mobile-nav-close{position:absolute;top:1.5rem;right:4%;font-size:1.5rem;color:#fff;cursor:pointer;background:none;border:none}
+
+    /* PAGE HEADER */
+    .page-header{background:var(--charcoal);padding:8rem 4% 5rem;position:relative;overflow:hidden;margin-top:0}
+    .page-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 100%,rgba(201,168,76,0.18) 0%,transparent 65%)}
+    .page-header-inner{position:relative;z-index:1;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+    .page-eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+    .page-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+    .page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;color:#fff;line-height:1.05;margin-bottom:1rem}
+    .page-title em{font-style:normal;color:var(--gold)}
+    .page-desc{font-size:0.95rem;color:rgba(255,255,255,0.6);font-weight:300;line-height:1.8;max-width:420px}
+    .header-right{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .header-stat{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:1.2rem;text-align:center}
+    .header-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1}
+    .header-stat-lbl{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.4rem}
+
+    /* DEPOSIT BANNER */
+    .deposit-banner{background:var(--charcoal-2);color:#fff;text-align:center;padding:0.9rem 4%;font-size:0.82rem;letter-spacing:0.03em}
+    .deposit-banner strong{color:var(--gold)}
+
+    /* FILTER TABS */
+    .filter-section{padding:2.5rem 4% 0;background:var(--off-white)}
+    .filter-inner{max-width:1200px;margin:0 auto}
+    .filter-tabs{display:flex;gap:0.5rem;flex-wrap:wrap}
+    .filter-tab{border:1.5px solid var(--border);background:#fff;border-radius:2px;padding:0.55rem 1.2rem;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s;user-select:none}
+    .filter-tab:hover{border-color:var(--gold);color:var(--charcoal)}
+    .filter-tab.active{background:var(--charcoal);border-color:var(--charcoal);color:var(--gold)}
+
+    /* SERVICES GRID */
+    .services-section{background:var(--off-white);padding:2rem 4% 5rem}
+    .services-inner{max-width:1200px;margin:0 auto}
+    .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+
+    /* SERVICE CARD */
+    .service-card{background:#fff;border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:transform 0.25s,box-shadow 0.25s;display:flex;flex-direction:column}
+    .service-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.1)}
+    .service-card.hidden{display:none}
+    .service-card-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;overflow:hidden}
+    .service-card-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.4),transparent)}
+    .service-card-badge{position:absolute;top:1rem;left:1rem;z-index:1;background:var(--gold);color:var(--charcoal);font-size:0.62rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:0.25rem 0.65rem;border-radius:2px}
+    .service-card-body{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+    .service-card-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--charcoal);margin-bottom:0.5rem}
+    .service-card-desc{font-size:0.85rem;color:var(--muted);line-height:1.8;font-weight:300;flex:1;margin-bottom:1.2rem}
+    .service-card-features{list-style:none;margin-bottom:1.3rem;display:flex;flex-direction:column;gap:0.3rem}
+    .service-card-features li{font-size:0.8rem;color:var(--text);display:flex;align-items:center;gap:0.5rem}
+    .service-card-features li::before{content:'✓';color:var(--green);font-weight:700;font-size:0.75rem;flex-shrink:0}
+    .service-card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1.1rem;border-top:1px solid var(--border);gap:1rem}
+    .service-card-price{font-size:0.78rem;color:var(--muted);font-weight:300}
+    .service-card-price strong{display:block;font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--charcoal)}
+    .btn-quote{display:inline-block;background:var(--charcoal);color:var(--gold);text-decoration:none;font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.6rem 1.2rem;border-radius:2px;transition:all 0.2s;white-space:nowrap;border:none;cursor:pointer;font-family:'Outfit',sans-serif}
+    .btn-quote:hover{background:var(--gold);color:var(--charcoal)}
+
+    /* PROCESS SECTION */
+    .process-section{background:#fff;padding:5rem 4%}
+    .process-inner{max-width:1200px;margin:0 auto}
+    .section-eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+    .section-eyebrow::before{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,2.8rem);font-weight:700;color:var(--charcoal);line-height:1.1;margin-bottom:0.8rem}
+    .section-title em{font-style:normal;color:var(--gold)}
+    .process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:3rem;position:relative}
+    .process-grid::before{content:'';position:absolute;top:26px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent)}
+    .process-step{text-align:center;padding:0 1.2rem}
+    .process-num{width:52px;height:52px;background:var(--charcoal);color:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;margin:0 auto 1.3rem;position:relative;z-index:1}
+    .process-title{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:600;color:var(--charcoal);margin-bottom:0.5rem}
+    .process-desc{font-size:0.8rem;color:var(--muted);line-height:1.7;font-weight:300}
+
+    /* CTA BAND */
+    .cta-band{background:var(--charcoal);padding:4rem 4%;text-align:center;position:relative;overflow:hidden}
+    .cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,0.12) 0%,transparent 70%)}
+    .cta-inner{position:relative;z-index:1;max-width:600px;margin:0 auto}
+    .cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:#fff;margin-bottom:0.8rem}
+    .cta-title em{font-style:normal;color:var(--gold)}
+    .cta-desc{font-size:0.92rem;color:rgba(255,255,255,0.55);font-weight:300;line-height:1.8;margin-bottom:2rem}
+    .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn-gold{display:inline-block;background:var(--gold);color:var(--charcoal);text-decoration:none;font-size:0.82rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.9rem 2rem;border-radius:2px;transition:all 0.2s}
+    .btn-gold:hover{background:var(--gold-light);transform:translateY(-2px)}
+    .btn-outline-white{display:inline-block;border:1px solid rgba(255,255,255,0.3);color:#fff;text-decoration:none;font-size:0.82rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.9rem 2rem;border-radius:2px;transition:all 0.2s}
+    .btn-outline-white:hover{border-color:var(--gold);background:rgba(201,168,76,0.1);transform:translateY(-2px)}
+
+    /* FOOTER */
+    footer{background:#111;color:rgba(255,255,255,0.5);padding:3rem 4%}
+    .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem}
+    .footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:0.3rem}
+    .footer-logo span{color:var(--gold)}
+    .footer-tagline{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:1rem}
+    .footer-about{font-size:0.82rem;line-height:1.8;font-weight:300}
+    .footer-col h4{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+    .footer-col ul{list-style:none}
+    .footer-col ul li{margin-bottom:0.6rem;font-size:0.83rem}
+    .footer-col ul li a{color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s}
+    .footer-col ul li a:hover{color:var(--gold)}
+    .footer-bottom{max-width:1200px;margin:2.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;flex-wrap:wrap;gap:0.5rem}
+
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease,transform 0.6s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+
+    @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+    @media(max-width:900px){
+      .page-header-inner{grid-template-columns:1fr}
+      .header-right{display:none}
+      .process-grid{grid-template-columns:1fr 1fr;gap:2rem}
+      .process-grid::before{display:none}
+      .footer-inner{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:600px){
+      .nav-links{display:none}
+      .nav-hamburger{display:flex}
+      .services-grid{grid-template-columns:1fr}
+      .process-grid{grid-template-columns:1fr}
+      .footer-inner{grid-template-columns:1fr;gap:2rem}
+      .filter-tabs{gap:0.4rem}
+      .filter-tab{font-size:0.72rem;padding:0.45rem 0.9rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="document.getElementById('mobileNav').classList.remove('open')">✕</button>
+  <a href="index.html">Home</a>
+  <a href="services.html" style="color:var(--gold)">Services</a>
+  <a href="quote.html">Get Estimate</a>
+  <a href="quote.html">Book Visit</a>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-main">P<span>&</span>I Finishings</div>
+    <div class="nav-logo-sub">Premium Drywall Specialists</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html" class="active">Services</a></li>
+    <li><a href="index.html#how">How It Works</a></li>
+    <li><a href="index.html#testimonials">Reviews</a></li>
+    <li><a href="quote.html" class="nav-cta">Get a Quote</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="document.getElementById('mobileNav').classList.add('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div>
+      <div class="page-eyebrow">What We Offer</div>
+      <h1 class="page-title">Premium <em>Services</em><br>Across Jamaica</h1>
+      <p class="page-desc">From a single room ceiling to a full commercial drywall installation — every job is handled with the same level of precision and professionalism.</p>
+    </div>
+    <div class="header-right">
+      <div class="header-stat"><div class="header-stat-num">8</div><div class="header-stat-lbl">Core Services</div></div>
+      <div class="header-stat"><div class="header-stat-num">500+</div><div class="header-stat-lbl">Projects Done</div></div>
+      <div class="header-stat"><div class="header-stat-num">14</div><div class="header-stat-lbl">Parishes Served</div></div>
+      <div class="header-stat"><div class="header-stat-num">10+</div><div class="header-stat-lbl">Years Experience</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DEPOSIT BANNER -->
+<div class="deposit-banner">
+  <strong>📋 50% Deposit Required</strong> — All projects require a 50% deposit before scheduling. Final quote confirmed after site inspection.
+</div>
+
+<!-- FILTER TABS -->
+<div class="filter-section">
+  <div class="filter-inner">
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-filter="all">All Services</button>
+      <button class="filter-tab" data-filter="ceiling">Ceilings</button>
+      <button class="filter-tab" data-filter="drywall">Drywall</button>
+      <button class="filter-tab" data-filter="finishing">Finishing</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES GRID -->
+<section class="services-section">
+  <div class="services-inner">
+    <div class="services-grid" id="servicesGrid">
+
+      <!-- FLAT CEILING -->
+      <div class="service-card reveal" data-category="ceiling">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#2a2a2a,#1a1a1a)">
+          <span style="position:relative;z-index:1">⬜</span>
+          <div class="service-card-badge">Most Popular</div>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Flat Ceiling Installation</div>
+          <div class="service-card-desc">Clean, level drywall ceilings that instantly transform any room. Our flat ceiling installations are smooth, perfectly finished, and ready to paint.</div>
+          <ul class="service-card-features">
+            <li>Residential &amp; commercial</li>
+            <li>Single rooms to full buildings</li>
+            <li>Smooth or textured finish</li>
+            <li>Primed and paint-ready</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>JMD $300 / sq ft</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRAY CEILING -->
+      <div class="service-card reveal" data-category="ceiling">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#3a2e1a,#1a1510)">
+          <span style="position:relative;z-index:1">✦</span>
+          <div class="service-card-badge" style="background:var(--charcoal);color:var(--gold)">Luxury</div>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Tray &amp; Decorative Ceilings</div>
+          <div class="service-card-desc">Elegant tray, coffered, and multi-level ceiling designs that add depth, character, and luxury to any living space or commercial interior.</div>
+          <ul class="service-card-features">
+            <li>Custom tray &amp; coffered designs</li>
+            <li>Single and multi-level options</li>
+            <li>LED cove lighting ready</li>
+            <li>Pairs with any décor style</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>Custom Pricing</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESIDENTIAL DRYWALL -->
+      <div class="service-card reveal" data-category="drywall">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#1e2a1e,#101810)">
+          <span style="position:relative;z-index:1">🏠</span>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Residential Drywall</div>
+          <div class="service-card-desc">Full drywall installation for homes of all sizes. From new builds to renovations, we deliver clean, smooth walls that are primed and ready for painting.</div>
+          <ul class="service-card-features">
+            <li>New builds &amp; renovations</li>
+            <li>All room types &amp; sizes</li>
+            <li>Moisture-resistant options</li>
+            <li>Clean, minimal mess</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>Quote on Request</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMMERCIAL DRYWALL -->
+      <div class="service-card reveal" data-category="drywall">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#1a1e2a,#0e1018)">
+          <span style="position:relative;z-index:1">🏢</span>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Commercial Drywall</div>
+          <div class="service-card-desc">Office spaces, retail units, warehouses and commercial builds. We work efficiently to meet deadlines without compromising on quality.</div>
+          <ul class="service-card-features">
+            <li>Offices, retail &amp; hospitality</li>
+            <li>Fire-rated board options</li>
+            <li>Tight deadline delivery</li>
+            <li>Project management support</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>Quote on Request</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARTITION WALLS -->
+      <div class="service-card reveal" data-category="drywall">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#2a1e2a,#180e18)">
+          <span style="position:relative;z-index:1">▦</span>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Partition Walls</div>
+          <div class="service-card-desc">Professionally installed drywall partition walls to divide, define and optimise your space — for homes, offices, and commercial properties.</div>
+          <ul class="service-card-features">
+            <li>Single and double-sided</li>
+            <li>Soundproofing insulation options</li>
+            <li>Door frame integration</li>
+            <li>Floor to ceiling or partial</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>Quote on Request</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SMALL ROOM PACKAGE -->
+      <div class="service-card reveal" data-category="drywall">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#1a2a20,#0e1810)">
+          <span style="position:relative;z-index:1">🛏</span>
+          <div class="service-card-badge" style="background:var(--green);color:#fff">Best Value</div>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Small Room Package</div>
+          <div class="service-card-desc">Our complete small room finishing package covers ceiling, walls, and finishing — everything you need to transform a single room at a great price.</div>
+          <ul class="service-card-features">
+            <li>Ceiling + walls included</li>
+            <li>Bedroom, bathroom, office</li>
+            <li>Enter room dimensions for price</li>
+            <li>Fast turnaround — 2 to 3 days</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>JMD $150,000</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUILT-IN SHELVES -->
+      <div class="service-card reveal" data-category="finishing">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#2a2218,#18150e)">
+          <span style="position:relative;z-index:1">📚</span>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Built-in Shelves</div>
+          <div class="service-card-desc">Custom-designed built-in shelving and storage solutions, crafted from drywall to fit your space perfectly and complement your interior.</div>
+          <ul class="service-card-features">
+            <li>Custom-measured to your space</li>
+            <li>Living rooms, offices &amp; bedrooms</li>
+            <li>Smooth finish, paint-ready</li>
+            <li>Open or closed designs</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>Quote on Request</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINTING -->
+      <div class="service-card reveal" data-category="finishing">
+        <div class="service-card-img" style="background:linear-gradient(135deg,#1a1a2a,#0e0e18)">
+          <span style="position:relative;z-index:1">🎨</span>
+        </div>
+        <div class="service-card-body">
+          <div class="service-card-name">Painting</div>
+          <div class="service-card-desc">Professional interior painting to complete your project. We apply the perfect finish over our drywall work or any existing surface, with clean lines and zero mess.</div>
+          <ul class="service-card-features">
+            <li>Interior walls &amp; ceilings</li>
+            <li>Primer + 2-coat application</li>
+            <li>Clean edge work &amp; trim</li>
+            <li>Any colour, any finish</li>
+          </ul>
+          <div class="service-card-footer">
+            <div class="service-card-price">Starting from<strong>Quote on Request</strong></div>
+            <a href="quote.html" class="btn-quote">Get Quote</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end services-grid -->
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="process-inner">
+    <div style="text-align:center;margin-bottom:0.5rem">
+      <div class="section-eyebrow reveal" style="justify-content:center">Simple Process</div>
+      <h2 class="section-title reveal">How We <em>Work</em></h2>
+      <p style="font-size:0.92rem;color:var(--muted);font-weight:300;max-width:460px;margin:0 auto;line-height:1.8;" class="reveal">From first contact to a flawless finish — here's exactly what happens when you work with us.</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="process-num">1</div>
+        <div class="process-title">Request a Quote</div>
+        <div class="process-desc">Use our online estimate builder or call us directly to get an instant price guide for your project.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-num">2</div>
+        <div class="process-title">Free Site Visit</div>
+        <div class="process-desc">We visit your property, assess the space, and confirm the final quote with no obligation.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-num">3</div>
+        <div class="process-title">Pay 50% Deposit</div>
+        <div class="process-desc">Secure your spot on our schedule with a 50% deposit via bank transfer or cash in person.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="process-num">4</div>
+        <div class="process-title">Flawless Finish</div>
+        <div class="process-desc">Our team arrives on time and delivers the quality finish your space deserves. Balance due on completion.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="cta-inner">
+    <div class="section-eyebrow reveal" style="justify-content:center;color:var(--gold)">Ready to Start?</div>
+    <h2 class="cta-title reveal">Get Your <em>Free Estimate</em> Today</h2>
+    <p class="cta-desc reveal">Use our instant estimate builder or book a free site visit. We serve all 14 parishes across Jamaica.</p>
+    <div class="cta-btns reveal">
+      <a href="quote.html" class="btn-gold">Build My Estimate</a>
+      <a href="quote.html" class="btn-outline-white">Book a Site Visit</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">P<span>&</span>I Finishings</div>
+      <div class="footer-tagline">A division of P&I Enterprise Limited</div>
+      <p class="footer-about">Jamaica's trusted drywall and ceiling specialists. Serving homes and businesses island-wide with premium craftsmanship and professional service.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="services.html">Flat Ceiling</a></li>
+        <li><a href="services.html">Tray Ceilings</a></li>
+        <li><a href="services.html">Residential Drywall</a></li>
+        <li><a href="services.html">Commercial Drywall</a></li>
+        <li><a href="services.html">Partitions</a></li>
+        <li><a href="services.html">Painting</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="quote.html">Get Estimate</a></li>
+        <li><a href="quote.html">Book Site Visit</a></li>
+        <li><a href="index.html#testimonials">Reviews</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+18760000000">+1 (876) 000-0000</a></li>
+        <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bfd6d1d9d0ffcfd6d9d6d1d6ccd7d6d1d8cc91dcd0d2">[email&#160;protected]</a></li>
+        <li><a href="#">Jamaica, Island-Wide</a></li>
+        <li><a href="#">Mon – Sat: 8am – 6pm</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 P&I Enterprise Limited. All rights reserved.</span>
+    <span>P&I Finishings — Premium Drywall &amp; Ceiling Specialists, Jamaica</span>
+  </div>
+</footer>
+
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+
+  // Navbar scroll
+  window.addEventListener('scroll', function() {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Filter tabs
+  var tabs = document.querySelectorAll('.filter-tab');
+  var cards = document.querySelectorAll('.service-card');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      // Update active tab
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+
+      // Filter cards
+      var filter = tab.getAttribute('data-filter');
+      cards.forEach(function(card) {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Make all reveal elements visible immediately
+  document.querySelectorAll('.reveal').forEach(function(el) {
+    el.classList.add('visible');
+  });
+
+});
+</script>
+</body>
+</html>

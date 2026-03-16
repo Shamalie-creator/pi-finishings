@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get a Quote | P&I Finishings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --charcoal:#1c1c1c;--charcoal2:#2a2a2a;
+      --gold:#c9a84c;--gold-light:#e8d090;--gold-pale:#faf4e1;
+      --white:#fff;--off-white:#f8f7f4;--bg:#f4f5f7;
+      --border:#e2e4e8;--text:#1a1a1a;--muted:#7a7a8a;
+      --green:#2d6a4f;--green-light:#edf7f2;
+      --red:#c0392b;--red-light:#fff0f0;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Outfit',sans-serif;background:var(--off-white);color:var(--text);font-size:15px;min-height:100vh}
+
+    /* NAV */
+    nav{background:var(--charcoal);padding:0 5%;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:#fff;text-decoration:none}
+    .nav-logo span{color:var(--gold)}
+    .nav-back{font-size:0.75rem;color:rgba(255,255,255,0.45);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s}
+    .nav-back:hover{color:var(--gold)}
+
+    /* HERO */
+    .hero{background:var(--charcoal);padding:3.5rem 5% 4.5rem;text-align:center;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center bottom,rgba(201,168,76,0.12) 0%,transparent 70%)}
+    .hero-inner{position:relative;z-index:1}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:0.6rem;font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+    .hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1px;background:var(--gold);opacity:0.5}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;color:#fff;line-height:1.1;margin-bottom:0.8rem}
+    .hero-title em{color:var(--gold);font-style:italic}
+    .hero-sub{font-size:0.9rem;color:rgba(255,255,255,0.45);font-weight:300;max-width:460px;margin:0 auto;line-height:1.8}
+
+    /* PROGRESS */
+    .progress-wrap{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:58px;z-index:90;padding:0 5%}
+    .progress-steps{display:flex;max-width:800px;margin:0 auto}
+    .prog-step{flex:1;display:flex;align-items:center;gap:0.5rem;padding:0.9rem 0;position:relative;cursor:default}
+    .prog-step:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:1px;height:18px;background:var(--border)}
+    .prog-dot{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:var(--muted);flex-shrink:0;transition:all 0.25s;background:#fff}
+    .prog-label{font-size:0.68rem;font-weight:500;color:var(--muted);letter-spacing:0.03em;transition:color 0.25s}
+    .prog-step.active .prog-dot{background:var(--charcoal);border-color:var(--charcoal);color:var(--gold)}
+    .prog-step.active .prog-label{color:var(--charcoal);font-weight:600}
+    .prog-step.done .prog-dot{background:var(--green);border-color:var(--green);color:#fff}
+    .prog-step.done .prog-label{color:var(--green)}
+    @media(max-width:600px){.prog-label{display:none}.prog-step{justify-content:center}}
+
+    /* LAYOUT */
+    .main-wrap{max-width:1060px;margin:0 auto;padding:2rem 5%;display:grid;grid-template-columns:1fr 300px;gap:1.8rem;align-items:start}
+    @media(max-width:860px){.main-wrap{grid-template-columns:1fr}.sidebar{order:-1}}
+
+    /* FORM CARD */
+    .form-card{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .form-card-header{padding:1.6rem 2rem 1.1rem;border-bottom:1px solid var(--border)}
+    .form-card-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--charcoal)}
+    .form-card-sub{font-size:0.8rem;color:var(--muted);margin-top:0.25rem;font-weight:300}
+    .form-card-body{padding:1.8rem 2rem}
+
+    /* STEPS */
+    .step{display:none}.step.active{display:block;animation:fadeUp 0.2s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    /* CHOICE CARDS */
+    .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.9rem;margin-bottom:1.5rem}
+    .choice-card{border:2px solid var(--border);border-radius:5px;padding:1.4rem;cursor:pointer;transition:all 0.2s;text-align:center;background:#fff;user-select:none}
+    .choice-card:hover{border-color:var(--gold);background:var(--gold-pale)}
+    .choice-card.selected{border-color:var(--charcoal);background:var(--charcoal)}
+    .choice-card.selected .choice-name{color:var(--gold)}
+    .choice-card.selected .choice-desc{color:rgba(255,255,255,0.5)}
+    .choice-icon{font-size:1.8rem;margin-bottom:0.6rem;display:block}
+    .choice-name{font-size:0.95rem;font-weight:600;color:var(--charcoal);margin-bottom:0.3rem}
+    .choice-desc{font-size:0.75rem;color:var(--muted)}
+
+    /* SERVICE CHECKS */
+    .service-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem}
+    .service-check{display:flex;align-items:center;gap:0.9rem;border:1.5px solid var(--border);border-radius:4px;padding:0.9rem 1.1rem;cursor:pointer;transition:all 0.2s;background:#fff;user-select:none}
+    .service-check:hover{border-color:var(--gold);background:var(--gold-pale)}
+    .service-check.checked{border-color:var(--charcoal);background:var(--charcoal)}
+    .service-check.checked .service-check-name{color:var(--gold)}
+    .service-check.checked .service-check-hint{color:rgba(255,255,255,0.4)}
+    .service-check.checked .service-check-price{color:rgba(255,255,255,0.6)}
+    .custom-check{width:20px;height:20px;border-radius:3px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:transparent;flex-shrink:0;transition:all 0.2s;background:#fff}
+    .service-check.checked .custom-check{background:var(--gold);border-color:var(--gold);color:var(--charcoal)}
+    .service-check-info{flex:1}
+    .service-check-name{font-size:0.85rem;font-weight:500;color:var(--charcoal)}
+    .service-check-hint{font-size:0.72rem;color:var(--muted);margin-top:2px}
+    .service-check-price{font-size:0.75rem;font-weight:600;color:var(--muted);white-space:nowrap}
+
+    /* FIELDS */
+    .field-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .field-label{font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--charcoal)}
+    .field-input{padding:0.65rem 0.9rem;border:1.5px solid var(--border);border-radius:4px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:var(--text);outline:none;transition:border-color 0.2s;background:#fff;width:100%}
+    .field-input:focus{border-color:var(--charcoal)}
+    .field-input.error{border-color:var(--red);background:var(--red-light)}
+    .field-error{font-size:0.72rem;color:var(--red);display:none}
+    .field-error.show{display:block}
+    select.field-input{cursor:pointer}
+
+    /* RADIO OPTIONS */
+    .radio-group{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem}
+    .radio-option{display:flex;align-items:center;gap:0.5rem;border:1.5px solid var(--border);border-radius:3px;padding:0.55rem 1rem;cursor:pointer;font-size:0.82rem;transition:all 0.2s;user-select:none}
+    .radio-option:hover{border-color:var(--gold)}
+    .radio-option.selected{border-color:var(--charcoal);background:var(--charcoal);color:var(--gold)}
+    .radio-option input{display:none}
+
+    /* PROP CARDS */
+    .prop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:0.4rem}
+    .prop-card{border:1.5px solid var(--border);border-radius:4px;padding:0.9rem 0.6rem;cursor:pointer;transition:all 0.2s;text-align:center;background:#fff;user-select:none}
+    .prop-card:hover{border-color:var(--gold);background:var(--gold-pale)}
+    .prop-card.selected{border-color:var(--charcoal);background:var(--charcoal)}
+    .prop-card.selected .prop-name{color:var(--gold)}
+    .prop-icon{font-size:1.3rem;display:block;margin-bottom:0.35rem}
+    .prop-name{font-size:0.75rem;font-weight:500;color:var(--charcoal)}
+    .prop-grid.has-error .prop-card:not(.selected){border-color:#ffc0c0}
+
+    /* CALENDAR */
+    .calendar-wrap{border:1.5px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:0.4rem}
+    .calendar-wrap.has-error{border-color:var(--red)}
+    .cal-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--charcoal);color:#fff}
+    .cal-month-label{font-size:0.85rem;font-weight:500;color:#fff}
+    .cal-nav{background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1rem;padding:0.2rem 0.5rem;transition:color 0.15s}
+    .cal-nav:hover{color:var(--gold)}
+    .cal-grid{padding:0.9rem}
+    .cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:0.4rem}
+    .cal-day-name{text-align:center;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:0.2rem 0}
+    .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+    .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:3px;font-size:0.82rem;border:1.5px solid transparent;user-select:none}
+    .cal-day.available{cursor:pointer;transition:all 0.15s}
+    .cal-day.available:hover{border-color:var(--gold);background:var(--gold-pale)}
+    .cal-day.selected{background:var(--charcoal);color:var(--gold);border-color:var(--charcoal);font-weight:600}
+    .cal-day.disabled{color:#ccc;cursor:not-allowed}
+    .cal-day.empty{cursor:default}
+
+    /* TIME SLOTS */
+    .time-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;margin-bottom:0.4rem}
+    .time-slot{border:1.5px solid var(--border);border-radius:3px;padding:0.6rem;text-align:center;cursor:pointer;font-size:0.78rem;font-weight:500;transition:all 0.2s;user-select:none;background:#fff}
+    .time-slot:hover{border-color:var(--gold);background:var(--gold-pale)}
+    .time-slot.selected{border-color:var(--charcoal);background:var(--charcoal);color:var(--gold)}
+    .time-slots.has-error .time-slot:not(.selected){border-color:#ffc0c0}
+
+    /* ESTIMATE BOX */
+    .estimate-box{background:var(--charcoal);border-radius:4px;padding:1.2rem;margin-bottom:1rem}
+    .est-row{display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:0.82rem}
+    .est-row:last-child{border-bottom:none;margin-top:0.5rem;padding-top:0.7rem}
+    .est-lbl{color:rgba(255,255,255,0.45)}
+    .est-val{color:#fff;font-weight:500}
+    .est-total{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--gold)}
+    .est-empty{text-align:center;padding:1rem;font-size:0.82rem;color:rgba(255,255,255,0.3);font-weight:300}
+
+    /* DISCLAIMER */
+    .disclaimer{background:var(--gold-pale);border:1px solid var(--gold-light);border-radius:3px;padding:0.8rem 1rem;font-size:0.75rem;color:var(--charcoal);line-height:1.7;margin-bottom:1.2rem}
+
+    /* REVIEW */
+    .review-section{margin-bottom:1.2rem}
+    .review-label{font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:0.5rem}
+    .review-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.83rem;gap:1rem}
+    .review-row:last-child{border-bottom:none}
+    .review-key{color:var(--muted)}
+    .review-val{font-weight:500;color:var(--charcoal);text-align:right}
+
+    /* NAV BUTTONS */
+    .form-nav{display:flex;justify-content:space-between;align-items:center;padding-top:1.2rem;border-top:1px solid var(--border);margin-top:0.5rem}
+    .btn-back{background:none;border:1.5px solid var(--border);padding:0.7rem 1.4rem;border-radius:3px;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s}
+    .btn-back:hover{border-color:var(--charcoal);color:var(--charcoal)}
+    .btn-next{background:var(--charcoal);border:none;padding:0.75rem 2rem;border-radius:3px;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);cursor:pointer;transition:all 0.2s}
+    .btn-next:hover{background:var(--charcoal2)}
+    .btn-submit{background:var(--gold);border:none;padding:0.75rem 2rem;border-radius:3px;font-family:'Outfit',sans-serif;font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--charcoal);cursor:pointer;transition:all 0.2s}
+    .btn-submit:hover{background:var(--gold-light)}
+    .btn-submit:disabled{opacity:0.6;cursor:not-allowed}
+
+    /* ERROR BANNER */
+    .error-banner{display:none;background:var(--red-light);border:1px solid var(--red);border-radius:4px;padding:0.75rem 1rem;font-size:0.8rem;color:var(--red);margin-bottom:1rem}
+    .error-banner.show{display:block}
+
+    /* SIDEBAR */
+    .sidebar{display:flex;flex-direction:column;gap:1rem;position:sticky;top:120px}
+    .sb-card{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .sb-head{background:var(--charcoal);padding:0.85rem 1.1rem}
+    .sb-title{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);font-weight:600}
+    .sb-body{padding:1.1rem}
+    .sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.8rem;gap:0.5rem}
+    .sum-row:last-child{border-bottom:none}
+    .sum-lbl{color:var(--muted);flex-shrink:0;font-size:0.72rem}
+    .sum-val{font-weight:500;color:var(--charcoal);text-align:right;font-size:0.8rem}
+    .sum-val.empty{color:var(--muted);font-weight:300;font-style:italic;font-size:0.75rem}
+    .est-preview{background:var(--charcoal);border-radius:4px;padding:1rem;text-align:center}
+    .est-preview-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:700;color:var(--gold);line-height:1}
+    .est-preview-lbl{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-top:0.3rem}
+    .est-preview-dep{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:0.5rem}
+
+    /* HOW TO PAY */
+    .pay-item{display:flex;align-items:flex-start;gap:0.7rem;padding:0.55rem 0;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--charcoal)}
+    .pay-item:last-child{border-bottom:none}
+    .pay-icon{font-size:0.95rem;flex-shrink:0;margin-top:1px}
+
+    /* SUCCESS */
+    .success-screen{display:none;text-align:center;padding:3rem 2rem}
+    .success-screen.show{display:block;animation:fadeUp 0.5s ease}
+    .success-icon{width:72px;height:72px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1.5rem}
+    .success-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--charcoal);margin-bottom:0.6rem}
+    .success-desc{font-size:0.88rem;color:var(--muted);font-weight:300;line-height:1.8;max-width:400px;margin:0 auto 1.5rem}
+    .success-ref{display:inline-block;background:var(--off-white);border:1px solid var(--border);border-radius:3px;padding:0.55rem 1.2rem;font-size:0.82rem;color:var(--charcoal);margin-bottom:2rem}
+    .success-ref strong{color:var(--gold)}
+    .success-summary{background:var(--charcoal);border-radius:5px;padding:1.2rem 1.4rem;margin:0 auto 1.5rem;max-width:380px;text-align:left}
+    .sum-s-row{display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid rgba(255,255,255,0.07);font-size:0.82rem;gap:1rem}
+    .sum-s-row:last-child{border-bottom:none}
+    .sum-s-lbl{color:rgba(255,255,255,0.4);flex-shrink:0}
+    .sum-s-val{color:#fff;font-weight:500;text-align:right}
+
+    @media(max-width:480px){.choice-grid{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}.prop-grid{grid-template-columns:repeat(2,1fr)}.time-slots{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">P<span>&</span>I Finishings</a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Free Quote</div>
+    <h1 class="hero-title">Get Your <em>Quote</em></h1>
+    <p class="hero-sub">Fill in a few details and we'll give you an instant price guide, then book your free site visit — all in one go.</p>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-steps" id="progressSteps">
+    <div class="prog-step active" data-step="1"><div class="prog-dot">1</div><div class="prog-label">Project</div></div>
+    <div class="prog-step" data-step="2"><div class="prog-dot">2</div><div class="prog-label">Services</div></div>
+    <div class="prog-step" data-step="3"><div class="prog-dot">3</div><div class="prog-label">Details</div></div>
+    <div class="prog-step" data-step="4"><div class="prog-dot">4</div><div class="prog-label">Site Visit</div></div>
+    <div class="prog-step" data-step="5"><div class="prog-dot">5</div><div class="prog-label">Your Info</div></div>
+    <div class="prog-step" data-step="6"><div class="prog-dot">6</div><div class="prog-label">Review</div></div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="form-card-title" id="stepTitle">Step 1 — Project Type</div>
+      <div class="form-card-sub" id="stepSub">Tell us what kind of project this is.</div>
+    </div>
+    <div class="form-card-body">
+
+      <!-- SUCCESS -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Request Submitted!</div>
+        <p class="success-desc">Thank you! We've received your quote request and site visit booking. We'll confirm your appointment within 24 hours.</p>
+        <div class="success-ref">Reference: <strong id="refNum">PI-000000</strong></div>
+        <div class="success-summary" id="successSummary"></div>
+        <a href="index.html" class="btn-next" style="text-decoration:none;display:inline-block">← Back to Home</a>
+      </div>
+
+      <!-- STEP 1: PROJECT TYPE -->
+      <div class="step active" id="step1">
+        <div class="choice-grid">
+          <div class="choice-card" id="card-residential">
+            <span class="choice-icon">🏠</span>
+            <div class="choice-name">Residential</div>
+            <div class="choice-desc">Home, apartment, or private dwelling</div>
+          </div>
+          <div class="choice-card" id="card-commercial">
+            <span class="choice-icon">🏢</span>
+            <div class="choice-name">Commercial</div>
+            <div class="choice-desc">Office, retail, or commercial space</div>
+          </div>
+        </div>
+        <div class="form-nav"><span></span><button class="btn-next" id="btnStep1Next">Next: Select Services →</button></div>
+      </div>
+
+      <!-- STEP 2: SERVICES -->
+      <div class="step" id="step2">
+        <div class="service-list" id="serviceList">
+          <div class="service-check" data-service="flat_ceiling"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Flat Ceiling Installation</div><div class="service-check-hint">Smooth drywall ceiling finish</div></div><div class="service-check-price">From JMD 220/sq ft</div></div>
+          <div class="service-check" data-service="tray_ceiling"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Tray / Decorative Ceiling</div><div class="service-check-hint">Stepped, coffered or feature ceilings</div></div><div class="service-check-price">From JMD 300/sq ft</div></div>
+          <div class="service-check" data-service="partition"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Partition Walls</div><div class="service-check-hint">Room dividers and drywall partitions</div></div><div class="service-check-price">From JMD 180/sq ft</div></div>
+          <div class="service-check" data-service="small_room"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Small Room Package</div><div class="service-check-hint">Ceiling + walls for one room</div></div><div class="service-check-price">From JMD 45,000</div></div>
+          <div class="service-check" data-service="shelves"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Built-in Shelves</div><div class="service-check-hint">Custom drywall shelving</div></div><div class="service-check-price">Quote on visit</div></div>
+          <div class="service-check" data-service="painting"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Painting</div><div class="service-check-hint">Interior painting services</div></div><div class="service-check-price">From JMD 45/sq ft</div></div>
+          <div class="service-check" data-service="residential_drywall"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Residential Drywall</div><div class="service-check-hint">Full wall drywall installation</div></div><div class="service-check-price">Quote on request</div></div>
+          <div class="service-check" data-service="commercial_drywall"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Commercial Drywall</div><div class="service-check-hint">Office & commercial installations</div></div><div class="service-check-price">Quote on request</div></div>
+        </div>
+        <div class="form-nav"><button class="btn-back" id="btnStep2Back">← Back</button><button class="btn-next" id="btnStep2Next">Next: Project Details →</button></div>
+      </div>
+
+      <!-- STEP 3: PROJECT DETAILS -->
+      <div class="step" id="step3">
+        <div id="conditionalFields"></div>
+        <div class="field-group">
+          <label class="field-label">Additional Notes (optional)</label>
+          <textarea class="field-input" id="notes" rows="3" placeholder="Any special requirements, access notes, or details..." style="resize:vertical"></textarea>
+        </div>
+        <div class="form-nav"><button class="btn-back" id="btnStep3Back">← Back</button><button class="btn-next" id="btnStep3Next">Next: Site Visit →</button></div>
+      </div>
+
+      <!-- STEP 4: SITE VISIT -->
+      <div class="step" id="step4">
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.7">We'll come to your property for a <strong style="color:var(--charcoal)">free site visit</strong> to confirm measurements and finalise your quote. Pick a date and time that works for you.</p>
+        <div class="field-group">
+          <label class="field-label">Property Type</label>
+          <div class="prop-grid" id="propGrid">
+            <div class="prop-card" data-prop="House"><span class="prop-icon">🏠</span><div class="prop-name">House</div></div>
+            <div class="prop-card" data-prop="Apartment"><span class="prop-icon">🏢</span><div class="prop-name">Apartment</div></div>
+            <div class="prop-card" data-prop="Office"><span class="prop-icon">💼</span><div class="prop-name">Office</div></div>
+            <div class="prop-card" data-prop="Retail / Shop"><span class="prop-icon">🏪</span><div class="prop-name">Retail / Shop</div></div>
+            <div class="prop-card" data-prop="Commercial"><span class="prop-icon">🏗</span><div class="prop-name">Commercial</div></div>
+            <div class="prop-card" data-prop="Other"><span class="prop-icon">📋</span><div class="prop-name">Other</div></div>
+          </div>
+          <div class="field-error" id="err-prop">Please select a property type.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Preferred Visit Date</label>
+          <div class="calendar-wrap" id="calendarWrap">
+            <div class="cal-header">
+              <button class="cal-nav" id="calPrev">‹</button>
+              <div class="cal-month-label" id="calMonthLabel"></div>
+              <button class="cal-nav" id="calNext">›</button>
+            </div>
+            <div class="cal-grid">
+              <div class="cal-days-header">
+                <div class="cal-day-name">Sun</div><div class="cal-day-name">Mon</div><div class="cal-day-name">Tue</div>
+                <div class="cal-day-name">Wed</div><div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div><div class="cal-day-name">Sat</div>
+              </div>
+              <div class="cal-days" id="calDays"></div>
+            </div>
+          </div>
+          <div class="field-error" id="err-date">Please select a preferred date.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Preferred Time</label>
+          <div class="time-slots" id="timeSlots">
+            <div class="time-slot">8am – 10am</div>
+            <div class="time-slot">10am – 12pm</div>
+            <div class="time-slot">12pm – 2pm</div>
+            <div class="time-slot">2pm – 4pm</div>
+            <div class="time-slot">4pm – 6pm</div>
+            <div class="time-slot">Flexible</div>
+          </div>
+          <div class="field-error" id="err-time">Please select a preferred time.</div>
+        </div>
+        <div class="field-row" style="margin-top:0.5rem">
+          <div class="field-group">
+            <label class="field-label">Estimated Budget (optional)</label>
+            <select class="field-input" id="budget">
+              <option value="">Select range...</option>
+              <option>Under JMD 100,000</option>
+              <option>JMD 100,000 – 250,000</option>
+              <option>JMD 250,000 – 500,000</option>
+              <option>JMD 500,000 – 1,000,000</option>
+              <option>Over JMD 1,000,000</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Preferred Start Date (optional)</label>
+            <select class="field-input" id="startDate">
+              <option value="">Select timeframe...</option>
+              <option>As soon as possible</option>
+              <option>Within 2 weeks</option>
+              <option>Within a month</option>
+              <option>1–3 months</option>
+              <option>3+ months</option>
+              <option>Flexible</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-nav"><button class="btn-back" id="btnStep4Back">← Back</button><button class="btn-next" id="btnStep4Next">Next: Your Info →</button></div>
+      </div>
+
+      <!-- STEP 5: YOUR INFO -->
+      <div class="step" id="step5">
+        <div class="field-row">
+          <div class="field-group"><label class="field-label">First Name</label><input class="field-input" id="firstName" type="text" placeholder="Your first name" /><div class="field-error" id="err-firstName">Required.</div></div>
+          <div class="field-group"><label class="field-label">Last Name</label><input class="field-input" id="lastName" type="text" placeholder="Your last name" /><div class="field-error" id="err-lastName">Required.</div></div>
+        </div>
+        <div class="field-group"><label class="field-label">Email Address</label><input class="field-input" id="email" type="email" placeholder="you@example.com" /><div class="field-error" id="err-email">Please enter a valid email.</div></div>
+        <div class="field-group"><label class="field-label">Phone Number</label><input class="field-input" id="phone" type="tel" placeholder="876-XXX-XXXX" /><div class="field-error" id="err-phone">Required.</div></div>
+        <div class="field-group"><label class="field-label">Property Address</label><input class="field-input" id="address" type="text" placeholder="Street, Area" /><div class="field-error" id="err-address">Required.</div></div>
+        <div class="field-group">
+          <label class="field-label">Parish</label>
+          <select class="field-input" id="parish">
+            <option value="">Select parish...</option>
+            <option>Kingston</option><option>St. Andrew</option><option>St. Thomas</option><option>Portland</option>
+            <option>St. Mary</option><option>St. Ann</option><option>Trelawny</option><option>St. James</option>
+            <option>Hanover</option><option>Westmoreland</option><option>St. Elizabeth</option><option>Manchester</option>
+            <option>Clarendon</option><option>St. Catherine</option>
+          </select>
+          <div class="field-error" id="err-parish">Please select your parish.</div>
+        </div>
+        <div class="form-nav"><button class="btn-back" id="btnStep5Back">← Back</button><button class="btn-next" id="btnStep5Next">Review My Request →</button></div>
+      </div>
+
+      <!-- STEP 6: REVIEW -->
+      <div class="step" id="step6">
+        <div class="disclaimer">⚠ <strong>Important:</strong> This estimate is based on information provided and is for guidance only. The <strong>final quote will be confirmed after the site visit.</strong> A 50% deposit is required before work is scheduled. Prices are in JMD.</div>
+        <div class="error-banner" id="errorBanner">⚠ Please check your details before submitting.</div>
+        <div id="reviewContent"></div>
+        <div class="form-nav"><button class="btn-back" id="btnStep6Back">← Back</button><button class="btn-submit" id="btnSubmit">Submit Request ✓</button></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-card">
+      <div class="sb-head"><div class="sb-title">Live Estimate</div></div>
+      <div class="sb-body">
+        <div class="est-preview" id="estPreview">
+          <div class="est-preview-val" id="previewTotal">—</div>
+          <div class="est-preview-lbl">Estimated Total</div>
+          <div class="est-preview-dep" id="previewDeposit"></div>
+        </div>
+        <div id="estLines" style="margin-top:0.8rem;font-size:0.75rem;color:var(--muted);line-height:1.9"></div>
+      </div>
+    </div>
+    <div class="sb-card">
+      <div class="sb-head"><div class="sb-title">Your Summary</div></div>
+      <div class="sb-body">
+        <div class="sum-row"><span class="sum-lbl">Services</span><span class="sum-val empty" id="sum-services">Not selected</span></div>
+        <div class="sum-row"><span class="sum-lbl">Visit Date</span><span class="sum-val empty" id="sum-date">Not selected</span></div>
+        <div class="sum-row"><span class="sum-lbl">Time</span><span class="sum-val empty" id="sum-time">Not selected</span></div>
+        <div class="sum-row"><span class="sum-lbl">Name</span><span class="sum-val empty" id="sum-name">Not entered yet</span></div>
+        <div class="sum-row"><span class="sum-lbl">Parish</span><span class="sum-val empty" id="sum-parish">Not entered yet</span></div>
+      </div>
+    </div>
+    <div class="sb-card">
+      <div class="sb-head"><div class="sb-title">How to Pay</div></div>
+      <div class="sb-body">
+        <div class="pay-item"><span class="pay-icon">🏦</span><span>Bank Transfer to our NCB or Scotiabank account. Details sent after booking.</span></div>
+        <div class="pay-item"><span class="pay-icon">💵</span><span>Cash in person at the time of our site visit.</span></div>
+        <div class="pay-item"><span class="pay-icon">🔒</span><span>50% deposit locks in your booking. Balance due on completion.</span></div>
+      </div>
+    </div>
+    <div class="sb-card">
+      <div class="sb-head"><div class="sb-title">Need Help?</div></div>
+      <div class="sb-body">
+        <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong>+1 (876) 000-0000</strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong>info@pifinishings.com</strong></span></div>
+        <div class="pay-item"><span class="pay-icon">🕐</span><span>Mon – Sat, 8am – 6pm</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+
+  var SUPABASE_URL = 'https://eobwndomdnaxrhiqotay.supabase.co';
+  var ANON_KEY     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ';
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  var state = {
+    currentStep: 1,
+    projectType: null,
+    services: {},
+    ceilingType: 'flat',
+    selectedProp: null,
+    selectedDate: null,
+    selectedTime: null,
+    calYear:  new Date().getFullYear(),
+    calMonth: new Date().getMonth()
+  };
+
+  var stepTitles = ['','Step 1 — Project Type','Step 2 — Select Services','Step 3 — Project Details','Step 4 — Site Visit','Step 5 — Your Information','Step 6 — Review & Submit'];
+  var stepSubs   = ['','Tell us what kind of project this is.','Choose all the services you need.','Help us calculate your estimate.','Book your free site visit.','So we can confirm your booking.','Check everything and submit.'];
+
+  // ── STEP NAV ──
+  function goToStep(n) {
+    document.getElementById('step'+state.currentStep).classList.remove('active');
+    document.getElementById('step'+n).classList.add('active');
+    document.querySelectorAll('.prog-step').forEach(function(el) {
+      var s = parseInt(el.getAttribute('data-step'));
+      el.classList.remove('active','done');
+      if (s === n) el.classList.add('active');
+      if (s < n)  el.classList.add('done');
+      el.querySelector('.prog-dot').textContent = s < n ? '✓' : s;
+    });
+    document.getElementById('stepTitle').textContent = stepTitles[n];
+    document.getElementById('stepSub').textContent   = stepSubs[n];
+    state.currentStep = n;
+    if (n === 3) renderConditionals();
+    if (n === 6) buildReview();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── STEP 1 ──
+  document.getElementById('card-residential').addEventListener('click', function() {
+    state.projectType = 'residential';
+    document.getElementById('card-residential').classList.add('selected');
+    document.getElementById('card-commercial').classList.remove('selected');
+  });
+  document.getElementById('card-commercial').addEventListener('click', function() {
+    state.projectType = 'commercial';
+    document.getElementById('card-commercial').classList.add('selected');
+    document.getElementById('card-residential').classList.remove('selected');
+  });
+  document.getElementById('btnStep1Next').addEventListener('click', function() {
+    if (!state.projectType) { alert('Please select a project type.'); return; }
+    goToStep(2);
+  });
+
+  // ── STEP 2 ──
+  document.querySelectorAll('.service-check').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var key = el.getAttribute('data-service');
+      if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
+      else { state.services[key] = true; el.classList.add('checked'); }
+      updateEstimate();
+      updateSummary();
+    });
+  });
+  document.getElementById('btnStep2Back').addEventListener('click', function() { goToStep(1); });
+  document.getElementById('btnStep2Next').addEventListener('click', function() {
+    if (Object.keys(state.services).length === 0) { alert('Please select at least one service.'); return; }
+    goToStep(3);
+  });
+
+  // ── STEP 3: CONDITIONAL FIELDS ──
+  function renderConditionals() {
+    var html = '';
+    var hasCeiling = state.services.flat_ceiling || state.services.tray_ceiling;
+    var hasPartition = state.services.partition;
+    var hasPaint = state.services.painting;
+    if (hasCeiling) {
+      html += '<div class="field-group"><label class="field-label">Ceiling Type</label><div class="radio-group" id="ceilingTypeGroup">' +
+        '<div class="radio-option'+(state.ceilingType==='flat'?' selected':'')+'" data-ct="flat">Flat</div>' +
+        '<div class="radio-option'+(state.ceilingType==='tray'?' selected':'')+'" data-ct="tray">Tray / Stepped</div>' +
+        '<div class="radio-option'+(state.ceilingType==='coffered'?' selected':'')+'" data-ct="coffered">Coffered</div>' +
+        '</div></div>' +
+        '<div class="field-row">' +
+        '<div class="field-group"><label class="field-label">Room Length (ft)</label><input class="field-input" id="roomLength" type="number" placeholder="e.g. 14" min="0" /></div>' +
+        '<div class="field-group"><label class="field-label">Room Width (ft)</label><input class="field-input" id="roomWidth" type="number" placeholder="e.g. 12" min="0" /></div>' +
+        '</div>' +
+        '<div class="field-row">' +
+        '<div class="field-group"><label class="field-label">Room Height (ft)</label><input class="field-input" id="roomHeight" type="number" placeholder="e.g. 9" min="0" /></div>' +
+        '<div class="field-group"><label class="field-label">Total Sq Ft (if known)</label><input class="field-input" id="ceilingSqft" type="number" placeholder="e.g. 280" min="0" /></div>' +
+        '</div>';
+    }
+    if (hasPaint) {
+      html += '<div class="field-group"><label class="field-label">Area to Paint (sq ft, optional)</label><input class="field-input" id="paintSqft" type="number" placeholder="e.g. 450" min="0" /></div>';
+    }
+    document.getElementById('conditionalFields').innerHTML = html;
+    if (hasCeiling) {
+      document.querySelectorAll('[data-ct]').forEach(function(el) {
+        el.addEventListener('click', function() {
+          document.querySelectorAll('[data-ct]').forEach(function(e){ e.classList.remove('selected'); });
+          el.classList.add('selected'); state.ceilingType = el.getAttribute('data-ct');
+        });
+      });
+      ['roomLength','roomWidth','roomHeight','ceilingSqft'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.addEventListener('input', updateEstimate);
+      });
+    }
+    if (hasPaint) {
+      var ps = document.getElementById('paintSqft'); if (ps) ps.addEventListener('input', updateEstimate);
+    }
+  }
+  document.getElementById('btnStep3Back').addEventListener('click', function() { goToStep(2); });
+  document.getElementById('btnStep3Next').addEventListener('click', function() { goToStep(4); });
+
+  // ── STEP 4: PROPERTY CARDS ──
+  document.querySelectorAll('.prop-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.prop-card').forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      state.selectedProp = card.getAttribute('data-prop');
+      document.getElementById('propGrid').classList.remove('has-error');
+      document.getElementById('err-prop').classList.remove('show');
+    });
+  });
+
+  // CALENDAR
+  function renderCalendar() {
+    var today = new Date(); today.setHours(0,0,0,0);
+    var minDate = new Date(today); minDate.setDate(minDate.getDate() + 2);
+    var y = state.calYear, m = state.calMonth;
+    document.getElementById('calMonthLabel').textContent = MONTHS[m] + ' ' + y;
+    var firstDay = new Date(y,m,1).getDay(), daysInMonth = new Date(y,m+1,0).getDate(), html = '';
+    for (var i = 0; i < firstDay; i++) html += '<div class="cal-day empty"></div>';
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dt = new Date(y,m,d), dis = dt.getDay()===0||dt<minDate;
+      var sel = state.selectedDate && dt.toDateString()===state.selectedDate.toDateString();
+      html += '<div class="cal-day'+(dis?' disabled':' available')+(sel?' selected':'')+(dt.toDateString()===today.toDateString()?' today':'')+'" data-date="'+dt.toISOString()+'">'+d+'</div>';
+    }
+    document.getElementById('calDays').innerHTML = html;
+    document.querySelectorAll('.cal-day.available').forEach(function(day) {
+      day.addEventListener('click', function() {
+        state.selectedDate = new Date(day.getAttribute('data-date'));
+        document.getElementById('calendarWrap').classList.remove('has-error');
+        document.getElementById('err-date').classList.remove('show');
+        renderCalendar();
+        updateSummary();
+      });
+    });
+  }
+  document.getElementById('calPrev').addEventListener('click', function() {
+    state.calMonth--; if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; } renderCalendar();
+  });
+  document.getElementById('calNext').addEventListener('click', function() {
+    state.calMonth++; if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; } renderCalendar();
+  });
+
+  // TIME SLOTS
+  document.querySelectorAll('.time-slot').forEach(function(slot) {
+    slot.addEventListener('click', function() {
+      document.querySelectorAll('.time-slot').forEach(function(s){ s.classList.remove('selected'); });
+      slot.classList.add('selected'); state.selectedTime = slot.textContent.trim();
+      document.getElementById('timeSlots').classList.remove('has-error');
+      document.getElementById('err-time').classList.remove('show');
+      updateSummary();
+    });
+  });
+
+  document.getElementById('btnStep4Back').addEventListener('click', function() { goToStep(3); });
+  document.getElementById('btnStep4Next').addEventListener('click', function() {
+    var valid = true;
+    if (!state.selectedProp) { document.getElementById('propGrid').classList.add('has-error'); document.getElementById('err-prop').classList.add('show'); valid = false; }
+    if (!state.selectedDate) { document.getElementById('calendarWrap').classList.add('has-error'); document.getElementById('err-date').classList.add('show'); valid = false; }
+    if (!state.selectedTime) { document.getElementById('timeSlots').classList.add('has-error'); document.getElementById('err-time').classList.add('show'); valid = false; }
+    if (valid) goToStep(5);
+  });
+
+  // ── STEP 5 ──
+  ['firstName','lastName','phone','address'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', updateSummary);
+  });
+  document.getElementById('parish').addEventListener('change', updateSummary);
+  document.getElementById('btnStep5Back').addEventListener('click', function() { goToStep(4); });
+  document.getElementById('btnStep5Next').addEventListener('click', function() {
+    var first = document.getElementById('firstName').value.trim();
+    var last  = document.getElementById('lastName').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var addr  = document.getElementById('address').value.trim();
+    var par   = document.getElementById('parish').value;
+    var ok = true;
+    function chk(id,errId,cond){ document.getElementById(id).classList.toggle('error',!cond); document.getElementById(errId).classList.toggle('show',!cond); if(!cond) ok=false; }
+    chk('firstName','err-firstName',first!=='');
+    chk('lastName', 'err-lastName', last!=='');
+    chk('email',    'err-email',    email.includes('@'));
+    chk('phone',    'err-phone',    phone!=='');
+    chk('address',  'err-address',  addr!=='');
+    chk('parish',   'err-parish',   par!=='');
+    if (ok) goToStep(6);
+  });
+
+  // ── STEP 6: REVIEW ──
+  document.getElementById('btnStep6Back').addEventListener('click', function() { goToStep(5); });
+
+  function buildReview() {
+    var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Package',shelves:'Built-in Shelves',painting:'Painting',residential_drywall:'Residential Drywall',commercial_drywall:'Commercial Drywall'};
+    var first  = document.getElementById('firstName').value;
+    var last   = document.getElementById('lastName').value;
+    var email  = document.getElementById('email').value;
+    var phone  = document.getElementById('phone').value;
+    var addr   = document.getElementById('address').value;
+    var parish = document.getElementById('parish').value;
+    var totalText = document.getElementById('previewTotal').textContent;
+    var dateStr = state.selectedDate ? DAYS[state.selectedDate.getDay()]+', '+MONTHS[state.selectedDate.getMonth()]+' '+state.selectedDate.getDate()+', '+state.selectedDate.getFullYear() : '—';
+    var svcs = Object.keys(state.services).map(function(s){ return svcNames[s]||s; }).join(', ');
+
+    document.getElementById('reviewContent').innerHTML =
+      rSection('Project',
+        rRow('Type', state.projectType==='residential'?'🏠 Residential':'🏢 Commercial') +
+        rRow('Services', svcs||'—') +
+        rRow('Estimate', totalText!=='—'?totalText:'Quote on visit')
+      ) +
+      rSection('Site Visit',
+        rRow('Property', state.selectedProp||'—') +
+        rRow('Date', dateStr) +
+        rRow('Time', state.selectedTime||'—') +
+        (document.getElementById('budget').value ? rRow('Budget', document.getElementById('budget').value) : '') +
+        (document.getElementById('startDate').value ? rRow('Start', document.getElementById('startDate').value) : '')
+      ) +
+      rSection('Your Details',
+        rRow('Name', first+' '+last) +
+        rRow('Email', email) +
+        rRow('Phone', phone) +
+        rRow('Address', addr+(parish?', '+parish:''))
+      );
+  }
+
+  function rSection(title, rows) {
+    return '<div class="review-section"><div class="review-label">'+title+'</div>'+rows+'</div>';
+  }
+  function rRow(k, v) {
+    return '<div class="review-row"><span class="review-key">'+k+'</span><span class="review-val">'+(v||'—')+'</span></div>';
+  }
+
+  // ── SUBMIT ──
+  document.getElementById('btnSubmit').addEventListener('click', function() {
+    var btn = document.getElementById('btnSubmit');
+    btn.disabled = true; btn.textContent = 'Submitting...';
+
+    var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Package',shelves:'Built-in Shelves',painting:'Painting',residential_drywall:'Residential Drywall',commercial_drywall:'Commercial Drywall'};
+    var servicesList = Object.keys(state.services).map(function(s){ return svcNames[s]||s; }).join(', ');
+    var totalEl = document.getElementById('previewTotal');
+    var rawTotal = totalEl ? parseInt((totalEl.textContent||'').replace(/[^0-9]/g,''))||0 : 0;
+    var first = document.getElementById('firstName').value.trim();
+    var last  = document.getElementById('lastName').value.trim();
+    var dateStr = state.selectedDate ? DAYS[state.selectedDate.getDay()]+', '+MONTHS[state.selectedDate.getMonth()]+' '+state.selectedDate.getDate()+', '+state.selectedDate.getFullYear() : '';
+
+    var payload = {
+      ref:           'PI-'+Math.floor(100000+Math.random()*900000),
+      name:          first+' '+last,
+      email:         document.getElementById('email').value.trim(),
+      phone:         document.getElementById('phone').value.trim(),
+      parish:        document.getElementById('parish').value,
+      address:       document.getElementById('address').value.trim(),
+      property_type: state.selectedProp||'',
+      services:      servicesList,
+      amount:        rawTotal,
+      deposit:       Math.round(rawTotal/2),
+      notes:         document.getElementById('notes').value.trim(),
+      visit_date:    dateStr,
+      time_slot:     state.selectedTime||'',
+      budget:        document.getElementById('budget').value,
+      start_date:    document.getElementById('startDate').value,
+      status:        'Submitted'
+    };
+
+    fetch(SUPABASE_URL+'/rest/v1/estimates', {
+      method: 'POST',
+      headers: {
+        'apikey': ANON_KEY,
+        'Authorization': 'Bearer '+ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    })
+    .catch(function(){})
+    .finally(function(){
+      document.getElementById('refNum').textContent = payload.ref;
+      document.getElementById('successSummary').innerHTML =
+        sRow('Services', servicesList) +
+        sRow('Visit', dateStr+(state.selectedTime?' · '+state.selectedTime:'')) +
+        sRow('Property', state.selectedProp) +
+        sRow('Parish', document.getElementById('parish').value) +
+        sRow('Estimate', rawTotal>0?'JMD '+rawTotal.toLocaleString():'Quote on visit');
+      document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('active'); });
+      document.getElementById('successScreen').classList.add('show');
+      document.getElementById('stepTitle').textContent = 'Request Submitted!';
+      document.getElementById('stepSub').textContent = "We'll confirm your appointment within 24 hours.";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  function sRow(l,v){ return '<div class="sum-s-row"><span class="sum-s-lbl">'+l+'</span><span class="sum-s-val">'+(v||'—')+'</span></div>'; }
+
+  // ── LIVE ESTIMATE ──
+  var pricing = {flat_ceiling:220,tray_ceiling:300,partition:180,small_room:45000,shelves:0,painting:45,residential_drywall:0,commercial_drywall:0};
+
+  function updateEstimate() {
+    var total = 0; var lines = [];
+    var sqft = parseFloat(document.getElementById('ceilingSqft') ? document.getElementById('ceilingSqft').value : 0)||0;
+    var rL = parseFloat(document.getElementById('roomLength') ? document.getElementById('roomLength').value : 0)||0;
+    var rW = parseFloat(document.getElementById('roomWidth')  ? document.getElementById('roomWidth').value  : 0)||0;
+    var area = sqft || (rL*rW) || 0;
+    var paintArea = parseFloat(document.getElementById('paintSqft') ? document.getElementById('paintSqft').value : 0)||0;
+    var rate = state.projectType==='commercial' ? 350 : 300;
+
+    Object.keys(state.services).forEach(function(svc) {
+      var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Package',shelves:'Built-in Shelves',painting:'Painting',residential_drywall:'Residential Drywall',commercial_drywall:'Commercial Drywall'};
+      var name = svcNames[svc]||svc;
+      if (svc==='flat_ceiling'||svc==='tray_ceiling') {
+        if (area>0) { var cost=area*rate; total+=cost; lines.push(name+': JMD '+cost.toLocaleString()+' ('+area+' sq ft)'); }
+        else lines.push(name+': Enter dimensions for price');
+      } else if (svc==='partition') {
+        if (area>0) { var cost2=area*pricing.partition; total+=cost2; lines.push(name+': JMD '+cost2.toLocaleString()); }
+        else lines.push(name+': Enter dimensions for price');
+      } else if (svc==='small_room') {
+        total+=45000; lines.push(name+': JMD 45,000');
+      } else if (svc==='painting') {
+        if (paintArea>0) { var cost3=paintArea*pricing.painting; total+=cost3; lines.push(name+': JMD '+cost3.toLocaleString()); }
+        else lines.push(name+': Enter area for price');
+      } else {
+        lines.push(name+': Quote on visit');
+      }
+    });
+
+    var previewTotal = document.getElementById('previewTotal');
+    var previewDep   = document.getElementById('previewDeposit');
+    var estLines     = document.getElementById('estLines');
+    if (total > 0) {
+      previewTotal.textContent = 'JMD '+total.toLocaleString();
+      previewDep.textContent   = '50% deposit: JMD '+Math.round(total/2).toLocaleString();
+    } else {
+      previewTotal.textContent = Object.keys(state.services).length>0 ? 'Quote on visit' : '—';
+      previewDep.textContent   = '';
+    }
+    estLines.innerHTML = lines.map(function(l){ return '• '+l; }).join('<br>');
+  }
+
+  // ── LIVE SUMMARY ──
+  function set(id, val) {
+    var el = document.getElementById(id); if (!el) return;
+    var ph = {'sum-services':'Not selected','sum-date':'Not selected','sum-time':'Not selected','sum-name':'Not entered yet','sum-parish':'Not entered yet'};
+    if (val) { el.textContent = val; el.classList.remove('empty'); }
+    else     { el.textContent = ph[id]||'Not entered yet'; el.classList.add('empty'); }
+  }
+
+  function updateSummary() {
+    var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Pkg',shelves:'Shelves',painting:'Painting',residential_drywall:'Res. Drywall',commercial_drywall:'Com. Drywall'};
+    var svcs = Object.keys(state.services).map(function(s){ return svcNames[s]||s; }).join(', ');
+    set('sum-services', svcs||null);
+    if (state.selectedDate) { var d=state.selectedDate; set('sum-date', MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear()); }
+    else set('sum-date',null);
+    set('sum-time',   state.selectedTime||null);
+    var first=document.getElementById('firstName')?document.getElementById('firstName').value.trim():'';
+    var last =document.getElementById('lastName') ?document.getElementById('lastName').value.trim() :'';
+    set('sum-name',   first||last?(first+' '+last).trim():null);
+    set('sum-parish', document.getElementById('parish')?document.getElementById('parish').value||null:null);
+  }
+
+  renderCalendar();
+  updateSummary();
+});
+</script>
+</body>
+</html>
