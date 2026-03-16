@@ -278,14 +278,7 @@
       <!-- STEP 2: SERVICES -->
       <div class="step" id="step2">
         <div class="service-list" id="serviceList">
-          <div class="service-check" data-service="flat_ceiling"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Flat Ceiling Installation</div><div class="service-check-hint">Smooth drywall ceiling finish</div></div><div class="service-check-price">From JMD 220/sq ft</div></div>
-          <div class="service-check" data-service="tray_ceiling"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Tray / Decorative Ceiling</div><div class="service-check-hint">Stepped, coffered or feature ceilings</div></div><div class="service-check-price">From JMD 300/sq ft</div></div>
-          <div class="service-check" data-service="partition"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Partition Walls</div><div class="service-check-hint">Room dividers and drywall partitions</div></div><div class="service-check-price">From JMD 180/sq ft</div></div>
-          <div class="service-check" data-service="small_room"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Small Room Package</div><div class="service-check-hint">Ceiling + walls for one room</div></div><div class="service-check-price">From JMD 45,000</div></div>
-          <div class="service-check" data-service="shelves"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Built-in Shelves</div><div class="service-check-hint">Custom drywall shelving</div></div><div class="service-check-price">Quote on visit</div></div>
-          <div class="service-check" data-service="painting"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Painting</div><div class="service-check-hint">Interior painting services</div></div><div class="service-check-price">From JMD 45/sq ft</div></div>
-          <div class="service-check" data-service="residential_drywall"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Residential Drywall</div><div class="service-check-hint">Full wall drywall installation</div></div><div class="service-check-price">Quote on request</div></div>
-          <div class="service-check" data-service="commercial_drywall"><div class="custom-check">✓</div><div class="service-check-info"><div class="service-check-name">Commercial Drywall</div><div class="service-check-hint">Office & commercial installations</div></div><div class="service-check-price">Quote on request</div></div>
+          <div style="padding:1rem;color:#888;text-align:center">Loading services...</div>
         </div>
         <div class="form-nav"><button class="btn-back" id="btnStep2Back">← Back</button><button class="btn-next" id="btnStep2Next">Next: Project Details →</button></div>
       </div>
@@ -442,7 +435,7 @@
       <div class="sb-head"><div class="sb-title">Need Help?</div></div>
       <div class="sb-body">
         <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong>+1 (876) 000-0000</strong></span></div>
-        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong>info@pifinishings.com</strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f79e999198b7879e919e999e849f9e999084d994989a">[email&#160;protected]</a></strong></span></div>
         <div class="pay-item"><span class="pay-icon">🕐</span><span>Mon – Sat, 8am – 6pm</span></div>
       </div>
     </div>
@@ -460,7 +453,7 @@ window.addEventListener('DOMContentLoaded', function() {
   var state = {
     currentStep: 1,
     projectType: null,
-    services: {},
+    services: {}, // {uuid: name}
     ceilingType: 'flat',
     selectedProp: null,
     selectedDate: null,
@@ -656,7 +649,6 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('btnStep6Back').addEventListener('click', function() { goToStep(5); });
 
   function buildReview() {
-    var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Package',shelves:'Built-in Shelves',painting:'Painting',residential_drywall:'Residential Drywall',commercial_drywall:'Commercial Drywall'};
     var first  = document.getElementById('firstName').value;
     var last   = document.getElementById('lastName').value;
     var email  = document.getElementById('email').value;
@@ -665,7 +657,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var parish = document.getElementById('parish').value;
     var totalText = document.getElementById('previewTotal').textContent;
     var dateStr = state.selectedDate ? DAYS[state.selectedDate.getDay()]+', '+MONTHS[state.selectedDate.getMonth()]+' '+state.selectedDate.getDate()+', '+state.selectedDate.getFullYear() : '—';
-    var svcs = Object.keys(state.services).map(function(s){ return svcNames[s]||s; }).join(', ');
+    var svcs = Object.values(state.services).join(', ');
 
     document.getElementById('reviewContent').innerHTML =
       rSection('Project',
@@ -700,8 +692,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var btn = document.getElementById('btnSubmit');
     btn.disabled = true; btn.textContent = 'Submitting...';
 
-    var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Package',shelves:'Built-in Shelves',painting:'Painting',residential_drywall:'Residential Drywall',commercial_drywall:'Commercial Drywall'};
-    var servicesList = Object.keys(state.services).map(function(s){ return svcNames[s]||s; }).join(', ');
+    var servicesList = Object.values(state.services).join(', ');
     var totalEl = document.getElementById('previewTotal');
     var rawTotal = totalEl ? parseInt((totalEl.textContent||'').replace(/[^0-9]/g,''))||0 : 0;
     var first = document.getElementById('firstName').value.trim();
@@ -769,8 +760,8 @@ window.addEventListener('DOMContentLoaded', function() {
     var rate = state.projectType==='commercial' ? 350 : 300;
 
     Object.keys(state.services).forEach(function(svc) {
-      var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Package',shelves:'Built-in Shelves',painting:'Painting',residential_drywall:'Residential Drywall',commercial_drywall:'Commercial Drywall'};
-      var name = svcNames[svc]||svc;
+      // service names already stored as values
+      var name = state.services[svc]||svc;
       if (svc==='flat_ceiling'||svc==='tray_ceiling') {
         if (area>0) { var cost=area*rate; total+=cost; lines.push(name+': JMD '+cost.toLocaleString()+' ('+area+' sq ft)'); }
         else lines.push(name+': Enter dimensions for price');
@@ -809,21 +800,53 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateSummary() {
-    var svcNames = {flat_ceiling:'Flat Ceiling',tray_ceiling:'Tray Ceiling',partition:'Partition Walls',small_room:'Small Room Pkg',shelves:'Shelves',painting:'Painting',residential_drywall:'Res. Drywall',commercial_drywall:'Com. Drywall'};
-    var svcs = Object.keys(state.services).map(function(s){ return svcNames[s]||s; }).join(', ');
+    var svcs = Object.values(state.services).join(', ');
     set('sum-services', svcs||null);
     if (state.selectedDate) { var d=state.selectedDate; set('sum-date', MONTHS[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear()); }
     else set('sum-date',null);
     set('sum-time',   state.selectedTime||null);
     var first=document.getElementById('firstName')?document.getElementById('firstName').value.trim():'';
     var last =document.getElementById('lastName') ?document.getElementById('lastName').value.trim() :'';
-    set('sum-name',   first||last?(first+' '+last).trim():null);
-    set('sum-parish', document.getElementById('parish')?document.getElementById('parish').value||null:null);
+    set('sum-name', (first+' '+last).trim()||null);
+    set('sum-parish', document.getElementById('parish')?document.getElementById('parish').value.trim():null);
   }
 
-  renderCalendar();
-  updateSummary();
-});
+  // ── SUPABASE SERVICE LOADER ──
+  fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/services?status=eq.active&order=sort_order.asc', {
+    headers: {
+      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ'
+    }
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (!Array.isArray(data) || data.length === 0) return;
+    var list = document.getElementById('serviceList');
+    if (!list) return;
+    list.innerHTML = data.map(function(s){
+      var hint = s.description ? s.description.substring(0,55)+'...' : '';
+      return '<div class="service-check" data-service="'+s.id+'" data-name="'+s.name.replace(/"/g,'&quot;')+'">' +
+        '<div class="custom-check">✓</div>' +
+        '<div class="service-check-info">' +
+          '<div class="service-check-name">'+s.name+'</div>' +
+          '<div class="service-check-hint">'+hint+'</div>' +
+        '</div>' +
+        '<div class="service-check-price">'+(s.price||'Quote on request')+'</div>' +
+      '</div>';
+    }).join('');
+    list.querySelectorAll('.service-check').forEach(function(el){
+      el.addEventListener('click', function(){
+        var key  = el.dataset.service;
+        var name = el.dataset.name;
+        if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
+        else { state.services[key] = name; el.classList.add('checked'); }
+        updateSummary();
+      });
+    });
+  })
+  .catch(function(){});
+
+}); // end DOMContentLoaded
 </script>
 </body>
 </html>
