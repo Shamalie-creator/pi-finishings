@@ -1192,8 +1192,18 @@ function buildInvoiceHTML(job){
   return '<div class="inv-doc">'+
     '<div class="inv-doc-head"><div><div class="inv-brand">'+(s.trading||'P&I Finishings').replace('&','<span style="color:#c9a84c">&</span>')+'</div><div style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-top:2px">A division of '+(s.company||'P&I Enterprise Limited')+'</div><div class="inv-brand-info">'+(s.address||'')+'<br>'+(s.phone||'')+'<br>'+(s.email||'')+(s.trn?'<br>TRN: '+s.trn:'')+'</div></div><div class="inv-title-blk"><div class="inv-title">INVOICE</div><div class="inv-meta">No: <b>'+invNum+'</b><br>Date: <b>'+dateStr+'</b><br>Due: <b>'+dueStr+'</b></div></div></div>'+
     '<div class="inv-parties"><div><div class="inv-plbl">From</div><div class="inv-pname">'+(s.trading||'P&I Finishings')+'</div><div class="inv-pinfo">'+(s.company||'')+'<br>'+(s.address||'')+'<br>'+(s.phone||'')+'<br>'+(s.website||'')+'</div></div><div><div class="inv-plbl">Bill To</div><div class="inv-pname">'+(job.name||'')+'</div><div class="inv-pinfo">'+(job.parish||'')+', Jamaica<br>'+(job.phone||'')+'<br>'+(job.email||'')+'</div></div></div>'+
-    '<table class="inv-tbl"><thead><tr><th>Description</th><th>Details</th><th style="text-align:right">Amount (JMD)</th></tr></thead><tbody><tr><td>'+(job.services||'Services')+'</td><td>As per agreed scope of work</td><td style="text-align:right">'+(job.amount>0?Number(job.amount).toLocaleString():'Per agreement')+'</td></tr></tbody></table>'+
-    '<div class="inv-totals"><div class="inv-trow"><span>Subtotal</span><span>'+fmtMoney(job.amount)+'</span></div><div class="inv-trow"><span>Deposit Paid (50%)</span><span>'+(job.deposit>0?'- JMD '+Number(job.deposit).toLocaleString():'—')+'</span></div><div class="inv-trow"><span>Balance</span><span>'+(job.deposit>0?'JMD '+Number(job.deposit).toLocaleString():'—')+'</span></div><div class="inv-trow grand"><span>Total Paid</span><span>'+(job.amount>0?'JMD '+Number(job.amount).toLocaleString():'Paid in full')+'</span></div></div>'+
+    '<table class="inv-tbl"><thead><tr><th>Description</th><th>Details</th><th style="text-align:right">Amount (JMD)</th></tr></thead><tbody>'+
+    '<tr><td>'+(job.services||'Services')+'</td><td>As per agreed scope of work</td><td style="text-align:right">'+(job.originalAmount>0?Number(job.originalAmount).toLocaleString():job.amount>0?Number(job.amount).toLocaleString():'Per agreement')+'</td></tr>'+
+    (job.discount>0?'<tr style="color:#2d6a4f"><td>🎉 Loyalty Discount</td><td>Special discount applied</td><td style="text-align:right;color:#2d6a4f">- JMD '+Number(job.discount).toLocaleString()+'</td></tr>':'')+
+    '</tbody></table>'+
+    '<div class="inv-totals">'+
+    (job.discount>0?'<div class="inv-trow"><span>Original Amount</span><span>JMD '+Number(job.originalAmount||job.amount+job.discount).toLocaleString()+'</span></div>':'')+ 
+    (job.discount>0?'<div class="inv-trow" style="color:#2d6a4f"><span>🎉 Discount Applied</span><span>- JMD '+Number(job.discount).toLocaleString()+'</span></div>':'')+
+    '<div class="inv-trow"><span>Total After Discount</span><span>'+fmtMoney(job.amount)+'</span></div>'+
+    '<div class="inv-trow"><span>50% Deposit</span><span>'+(job.deposit>0?'- JMD '+Number(job.deposit).toLocaleString():'—')+'</span></div>'+
+    '<div class="inv-trow"><span>Balance Due</span><span>'+(job.deposit>0?'JMD '+Number(job.deposit).toLocaleString():'—')+'</span></div>'+
+    '<div class="inv-trow grand"><span>Total</span><span>'+fmtMoney(job.amount)+'</span></div>'+
+    '</div>'+
     '<div class="inv-pay"><div class="inv-pay-lbl">Payment Details</div>'+(s.bank?s.bank+(s.acct_name?' · Acct: '+s.acct_name:'')+(s.acct_num?' · No: '+s.acct_num:'')+'<br>':'')+( s.pay_note||'')+'</div>'+
     '<div class="inv-footer-note">'+(s.footer_note||'Thank you for choosing P&I Finishings.')+'</div></div>';
 }
@@ -1361,12 +1371,15 @@ window.applyDiscount = function() {
   var confirmMsg = 'Apply JMD ' + amt.toLocaleString() + ' discount? New total: JMD ' + newAmount.toLocaleString() + ' | New 50% deposit: JMD ' + newDeposit.toLocaleString();
   if (!confirm(confirmMsg)) return;
 
+  var origAmt = currentJob.originalAmount || currentJob.amount;
   sbUpdate('estimates', currentJob.id, {
     discount: amt,
     amount: newAmount,
-    deposit: newDeposit
+    deposit: newDeposit,
+    original_amount: origAmt
   }).then(function() {
     currentJob.discount = amt;
+    currentJob.originalAmount = origAmt;
     currentJob.amount   = newAmount;
     currentJob.deposit  = newDeposit;
     renderJobs();
