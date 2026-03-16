@@ -50,7 +50,7 @@
 
     /* LAYOUT */
     .main-wrap{max-width:1060px;margin:0 auto;padding:2rem 5%;display:grid;grid-template-columns:1fr 300px;gap:1.8rem;align-items:start}
-    @media(max-width:860px){.main-wrap{grid-template-columns:1fr}.sidebar{order:-1}}
+    @media(max-width:860px){.main-wrap{grid-template-columns:1fr}.sidebar{order:2;position:static}}@media(max-width:600px){.sidebar{display:none}}
 
     /* FORM CARD */
     .form-card{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
@@ -435,14 +435,14 @@
       <div class="sb-head"><div class="sb-title">Need Help?</div></div>
       <div class="sb-body">
         <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong data-contact="phone">+1 (876) 000-0000</strong></span></div>
-        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="/cdn-cgi/l/email-protection#c3aaada5ac83b3aaa5aaadaab0abaaada4b0eda0acae" data-contact="email"><span class="__cf_email__" data-cfemail="4920272f260939202f2027203a2120272e3a672a2624">[email&#160;protected]</span></a></strong></span></div>
         <div class="pay-item"><span class="pay-icon">🕐</span><span>Mon – Sat, 8am – 6pm</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('DOMContentLoaded', function() {
 
   var SUPABASE_URL = 'https://eobwndomdnaxrhiqotay.supabase.co';
@@ -871,15 +871,4 @@ window.addEventListener('DOMContentLoaded', function() {
     });
     // Update address
     document.querySelectorAll('[data-contact="address"]').forEach(function(el) {
-      el.textContent = s.address || el.textContent;
-    });
-    // Update trading name
-    document.querySelectorAll('[data-contact="trading"]').forEach(function(el) {
-      el.textContent = s.trading || el.textContent;
-    });
-  })
-  .catch(function() {});
-})();
-</script>
-</body>
-</html>
+      el.textContent = s.address || el.text
