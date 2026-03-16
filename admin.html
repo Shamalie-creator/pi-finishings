@@ -642,10 +642,24 @@
             </div>
             <div class="field-group"><label class="field-label">Features (one per line)</label><textarea class="field-input" id="svcFeatures" rows="4" placeholder="e.g.&#10;Residential & commercial&#10;Smooth or textured finish&#10;Paint-ready"></textarea></div>
             <div class="field-group"><label class="field-label">Badge (optional)</label><input class="field-input" id="svcBadge" placeholder="e.g. Most Popular, Best Value, Luxury" /></div>
-            <div class="field-group"><label class="field-label">Photo URL</label>
-              <input class="field-input" id="svcPhoto" placeholder="Paste image URL here..." />
-              <div id="svcPhotoPreview" style="margin-top:0.5rem;height:120px;background:#1a1a1a;border-radius:4px;overflow:hidden;display:none">
+            <div class="field-group"><label class="field-label">Photo</label>
+              <!-- Upload from computer -->
+              <div id="svcUploadArea" style="border:2px dashed var(--border);border-radius:6px;padding:1.2rem;text-align:center;cursor:pointer;transition:border-color 0.2s;background:var(--off-white)" onclick="document.getElementById('svcPhotoFile').click()">
+                <div style="font-size:1.8rem;margin-bottom:0.4rem">📷</div>
+                <div style="font-size:13px;font-weight:600;color:var(--charcoal)">Click to upload a photo</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:0.2rem">JPG or PNG recommended</div>
+                <input type="file" id="svcPhotoFile" accept="image/*" style="display:none" onchange="uploadServicePhoto(this)" />
+              </div>
+              <div id="svcUploadProgress" style="display:none;margin-top:0.5rem;font-size:12px;color:var(--muted);text-align:center">⏳ Uploading...</div>
+              <!-- Preview -->
+              <div id="svcPhotoPreview" style="margin-top:0.5rem;height:140px;background:#1a1a1a;border-radius:4px;overflow:hidden;display:none;position:relative">
                 <img id="svcPhotoImg" style="width:100%;height:100%;object-fit:cover" />
+                <button onclick="clearServicePhoto()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:12px">✕</button>
+              </div>
+              <!-- URL fallback -->
+              <div style="margin-top:0.5rem">
+                <div style="font-size:11px;color:var(--muted);margin-bottom:0.3rem">Or paste a URL:</div>
+                <input class="field-input" id="svcPhoto" placeholder="https://..." style="font-size:12px" />
               </div>
             </div>
             <div class="field-group">
@@ -1348,6 +1362,32 @@ window.previewSampleInvoice=function(){
 };
 
 
+
+window.uploadImageTabPhoto = function(input, id) {
+  var file = input.files[0];
+  if (!file) return;
+  showToast('Uploading...');
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    var filename = 'site/' + id + '-' + Date.now() + '.' + file.name.split('.').pop();
+    fetch(SUPABASE_URL + '/storage/v1/object/site-images/' + filename, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': file.type||'image/jpeg', 'x-upsert': 'true' },
+      body: Uint8Array.from(atob(base64), function(c) { return c.charCodeAt(0); })
+    })
+    .then(function(r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function() {
+      var url = SUPABASE_URL + '/storage/v1/object/public/site-images/' + filename;
+      document.getElementById('imgurl-' + id).value = url;
+      var card = document.getElementById('imgcard-' + id);
+      if (card) card.querySelector('img').src = url;
+      saveImageUrl(id);
+    })
+    .catch(function() { showToast('Upload failed — make sure site-images bucket exists in Supabase', 'error'); });
+  };
+  reader.readAsDataURL(file);
+};
 // ── IMAGES ──
 var allSiteImages = [];
 
@@ -1400,6 +1440,7 @@ function renderImagesGrid() {
       '<div class="img-card-body">'+
         '<div class="img-card-label">' + imageLabels[id] + '</div>'+
         '<input class="img-url-input" id="imgurl-' + id + '" value="' + url + '" placeholder="Paste image URL here..." />'+
+        '<div style="margin-bottom:0.4rem"><label style="display:inline-block;background:var(--charcoal);color:var(--gold);padding:0.35rem 0.7rem;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer">📷 Upload Photo<input type="file" accept="image/*" style="display:none" onchange="uploadImageTabPhoto(this,\'' + id + '\')" /></label></div>'+
         '<div class="img-card-actions">'+
           '<button class="img-save-btn" onclick="saveImageUrl(\'' + id + '\')">💾 Save</button>'+
           '<button class="img-reset-btn" onclick="resetImage(\'' + id + '\')">Reset</button>'+
@@ -1449,6 +1490,65 @@ document.addEventListener('input', function(e) {
 
 
 
+
+
+// ── PHOTO UPLOAD ──
+window.uploadServicePhoto = function(input) {
+  var file = input.files[0];
+  if (!file) return;
+
+  // Show progress
+  var progress = document.getElementById('svcUploadProgress');
+  var area     = document.getElementById('svcUploadArea');
+  progress.style.display = 'block';
+  area.style.opacity = '0.5';
+
+  // Use FileReader to convert to base64 and upload to Supabase Storage
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64 = e.target.result.split(',')[1];
+    var ext = file.name.split('.').pop().toLowerCase();
+    var filename = 'services/' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9.]/g, '-');
+    var contentType = file.type || 'image/jpeg';
+
+    fetch(SUPABASE_URL + '/storage/v1/object/site-images/' + filename, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': contentType,
+        'x-upsert': 'true'
+      },
+      body: Uint8Array.from(atob(base64), function(c) { return c.charCodeAt(0); })
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error('Upload failed: ' + r.status);
+      return r.json();
+    })
+    .then(function() {
+      var publicUrl = SUPABASE_URL + '/storage/v1/object/public/site-images/' + filename;
+      document.getElementById('svcPhoto').value = publicUrl;
+      updateSvcPhotoPreview(publicUrl);
+      progress.style.display = 'none';
+      area.style.opacity = '1';
+      showToast('Photo uploaded ✓');
+    })
+    .catch(function(err) {
+      progress.style.display = 'none';
+      area.style.opacity = '1';
+      // Fallback: use base64 preview locally, tell user to use URL
+      showToast('Upload failed — try creating the storage bucket in Supabase first', 'error');
+      console.error(err);
+    });
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearServicePhoto = function() {
+  document.getElementById('svcPhoto').value = '';
+  document.getElementById('svcPhotoPreview').style.display = 'none';
+  document.getElementById('svcPhotoFile').value = '';
+};
 
 // ── CATEGORY MANAGEMENT ──
 var allCategories = ['ceiling','drywall','finishing'];
