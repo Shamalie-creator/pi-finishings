@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P&I Finishings | Premium Drywall & Ceiling Specialists — Jamaica</title>
+  <meta name="description" content="P&I Finishings delivers premium drywall, tray ceilings, partition walls, and painting services across Jamaica. Get your free estimate today." />
+  <meta name="keywords" content="drywall Jamaica, ceiling installation Jamaica, tray ceiling Kingston, partition walls Jamaica, drywall contractor Jamaica" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #ffffff;
+      --off-white: #f9f7f4;
+      --charcoal: #1c1c1c;
+      --charcoal-2: #2e2e2e;
+      --gold: #c9a84c;
+      --gold-light: #e8d090;
+      --gold-pale: #faf4e1;
+      --muted: #888078;
+      --border: #e8e2d8;
+      --text: #2a2a2a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4%;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+
+    nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+
+    .nav-logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .nav-logo-main {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--charcoal);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-logo-main span { color: var(--gold); }
+
+    .nav-logo-sub {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--charcoal);
+      color: var(--white) !important;
+      padding: 0.55rem 1.3rem;
+      border-radius: 2px;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--gold) !important; color: var(--charcoal) !important; }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--charcoal);
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--charcoal);
+      padding-top: 80px;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 80%, rgba(201,168,76,0.06) 0%, transparent 50%);
+    }
+
+    .hero-texture {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-line {
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 55%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.3), transparent);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 4%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-left { animation: fadeUp 0.9s ease both; }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+      max-width: 420px;
+      font-weight: 300;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--charcoal);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+    .btn-outline {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      border-radius: 2px;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      transform: translateY(-2px);
+    }
+
+    .hero-right {
+      animation: fadeUp 0.9s 0.2s ease both;
+      position: relative;
+    }
+
+    .hero-card-stack {
+      position: relative;
+      height: 480px;
+    }
+
+    .hero-card {
+      position: absolute;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .hero-card-main {
+      width: 85%;
+      height: 380px;
+      top: 0; right: 0;
+      background: linear-gradient(135deg, #3a3a3a 0%, #1a1a1a 100%);
+      display: flex;
+      align-items: flex-end;
+      padding: 1.5rem;
+    }
+
+    .hero-card-img {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #4a4035 0%, #2a2218 50%, #1a1410 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      opacity: 0.4;
+    }
+
+    .hero-card-overlay {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 1.5rem;
+    }
+
+    .hero-card-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.3rem;
+    }
+
+    .hero-card-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      color: white;
+      font-weight: 600;
+    }
+
+    .hero-card-accent {
+      width: 55%;
+      height: 180px;
+      bottom: 0; left: 0;
+      background: var(--gold);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 1.2rem;
+    }
+
+    .hero-stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--charcoal);
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(28,28,28,0.7);
+      margin-top: 0.3rem;
+    }
+
+    /* ── DEPOSIT BANNER ── */
+    .deposit-banner {
+      background: var(--charcoal-2);
+      color: var(--white);
+      text-align: center;
+      padding: 0.9rem 4%;
+      font-size: 0.82rem;
+      letter-spacing: 0.05em;
+    }
+
+    .deposit-banner strong { color: var(--gold); }
+
+    /* ── SECTION BASE ── */
+    section { padding: 6rem 4%; }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .section-eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--charcoal);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-title em { font-style: normal; color: var(--gold); }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      max-width: 520px;
+      font-weight: 300;
+    }
+
+    /* ── SERVICES ── */
+    .services-section { background: var(--off-white); }
+
+    .services-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5px;
+      background: var(--border);
+      border: 1.5px solid var(--border);
+    }
+
+    .service-card {
+      background: var(--white);
+      padding: 2rem;
+      cursor: pointer;
+      transition: background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+
+    .service-card:hover { background: var(--gold-pale); }
+    .service-card:hover::after { width: 100%; }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .service-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+    }
+
+    .service-desc {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+
+    .service-price {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-section { background: var(--white); }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0;
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .how-grid::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+    }
+
+    .how-step {
+      padding: 0 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .how-num {
+      width: 56px;
+      height: 56px;
+      background: var(--charcoal);
+      color: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .how-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+    }
+
+    .how-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── STATS BAND ── */
+    .stats-band {
+      background: var(--charcoal);
+      padding: 4rem 4%;
+    }
+
+    .stats-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-item {}
+
+    .stat-big {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-top: 0.5rem;
+    }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-section { background: var(--off-white); }
+
+    .testimonials-header { margin-bottom: 3rem; }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5rem;
+      color: var(--gold-light);
+      position: absolute;
+      top: 0.5rem; left: 1.2rem;
+      line-height: 1;
+    }
+
+    .testimonial-text {
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      padding-top: 1.5rem;
+      font-weight: 300;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .testimonial-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--charcoal);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--charcoal);
+    }
+
+    .testimonial-loc {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 0.3rem; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--charcoal);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.15) 0%, transparent 70%);
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .cta-inner .section-title { color: var(--white); }
+    .cta-inner .section-desc { color: rgba(255,255,255,0.55); max-width: 100%; margin: 0 auto 2.5rem; }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--charcoal);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.95rem 2.2rem;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #111;
+      color: rgba(255,255,255,0.5);
+      padding: 3rem 4%;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+    }
+
+    .footer-brand {}
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+
+    .footer-logo span { color: var(--gold); }
+
+    .footer-tagline {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 1rem;
+    }
+
+    .footer-about {
+      font-size: 0.82rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+
+    .footer-col h4 {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col ul li {
+      margin-bottom: 0.6rem;
+      font-size: 0.83rem;
+    }
+
+    .footer-col ul li a {
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul li a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 2.5rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--charcoal);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .mobile-nav.open { display: flex; }
+
+    .mobile-nav a {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .mobile-nav a:hover { color: var(--gold); }
+
+    .mobile-nav-close {
+      position: absolute;
+      top: 1.5rem; right: 4%;
+      font-size: 1.5rem;
+      color: var(--white);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-right { display: none; }
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .how-grid::before { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      section { padding: 4rem 5%; }
+      .hero-title { font-size: 2.8rem; }
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .how-step { margin-bottom: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+  <a href="services.html" onclick="closeMobileNav()">Services</a>
+  <a href="#how" onclick="closeMobileNav()">How It Works</a>
+  <a href="#testimonials" onclick="closeMobileNav()">Reviews</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+  <a href="quote.html" onclick="closeMobileNav()" style="color:var(--gold)">Get a Quote</a>
+</div>
+
+<nav id="navbar">
+  <div class="nav-logo">
+    <div class="nav-logo-main">P<span>&</span>I Finishings</div>
+    <div class="nav-logo-sub">Premium Drywall Specialists</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="services.html">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="quote.html" class="nav-cta">Get a Quote</a></li>
+  </ul>
+  <div class="nav-hamburger" onclick="openMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-texture"></div>
+  <div class="hero-line"></div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Jamaica's Premier Finishing Specialists</div>
+      <h1 class="hero-title">Crafted Ceilings.<br><em>Flawless Finish.</em></h1>
+      <p class="hero-desc">From tray ceilings to full drywall installations — P&I Finishings delivers luxury-grade craftsmanship to homes and businesses across Jamaica.</p>
+      <div class="hero-buttons">
+        <a href="quote.html" class="btn-primary">Build My Estimate</a>
+        <a href="services.html" class="btn-outline">View Services</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card-stack">
+        <div class="hero-card hero-card-main">
+          <!-- PHOTO: replace "images/hero-project.jpg" with your real photo path -->
+          <div class="hero-card-img">
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=80" alt="Featured Project" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;display:block" />
+          </div>
+          <div class="hero-card-overlay">
+            <div class="hero-card-label">Featured Project</div>
+            <div class="hero-card-text">Luxury Tray Ceiling — Kingston</div>
+          </div>
+        </div>
+        <div class="hero-card hero-card-accent">
+          <div class="hero-stat-num">500+</div>
+          <div class="hero-stat-label">Projects Completed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="deposit-banner">
+  <strong>📋 50% Deposit Required</strong> — All projects require a 50% deposit before scheduling. Final quote confirmed after site inspection.
+</div>
+
+<section class="services-section" id="services">
+  <div class="section-inner">
+    <div class="services-header">
+      <div>
+        <div class="section-eyebrow reveal">What We Do</div>
+        <h2 class="section-title reveal">Our <em>Services</em></h2>
+        <p class="section-desc reveal">From residential renovations to large commercial builds — we handle it all with precision and care.</p>
+      </div>
+      <a href="quote.html" class="btn-primary reveal" style="white-space:nowrap;text-decoration:none">Request a Quote</a>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal"><span class="service-icon">🏠</span><div class="service-name">Residential Drywall</div><div class="service-desc">Full drywall installation for homes of all sizes. Clean, smooth, ready to paint.</div><div class="service-price">Starting price on request</div></div>
+      <div class="service-card reveal"><span class="service-icon">🏢</span><div class="service-name">Commercial Drywall</div><div class="service-desc">Office spaces, retail units, and commercial builds done on time and on budget.</div><div class="service-price">Starting price on request</div></div>
+      <div class="service-card reveal"><span class="service-icon">⬜</span><div class="service-name">Flat Ceiling Installation</div><div class="service-desc">Clean, level flat ceilings that transform any room. From JMD $300 per sq ft.</div><div class="service-price">From JMD $300 / sq ft</div></div>
+      <div class="service-card reveal"><span class="service-icon">✦</span><div class="service-name">Tray & Decorative Ceilings</div><div class="service-desc">Elegant tray and coffered ceiling designs that add luxury and character to any space.</div><div class="service-price">Custom pricing</div></div>
+      <div class="service-card reveal"><span class="service-icon">▦</span><div class="service-name">Partition Walls</div><div class="service-desc">Divide and define spaces with professionally installed partition walls.</div><div class="service-price">Starting price on request</div></div>
+      <div class="service-card reveal"><span class="service-icon">🛏</span><div class="service-name">Small Room Package</div><div class="service-desc">Complete small room finishing packages. Enter your dimensions for an instant estimate.</div><div class="service-price">From JMD $150,000</div></div>
+      <div class="service-card reveal"><span class="service-icon">📚</span><div class="service-name">Built-in Shelves</div><div class="service-desc">Custom built-in shelving and storage solutions designed to fit your space perfectly.</div><div class="service-price">Starting price on request</div></div>
+      <div class="service-card reveal"><span class="service-icon">🎨</span><div class="service-name">Painting</div><div class="service-desc">Professional interior painting to complete your project with a flawless finish.</div><div class="service-price">Starting price on request</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="how-section" id="how">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:1rem">
+      <div class="section-eyebrow reveal" style="justify-content:center">Simple Process</div>
+      <h2 class="section-title reveal">How It <em>Works</em></h2>
+      <p class="section-desc reveal" style="margin:0 auto">From first contact to finished project — here's what to expect when you work with us.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step reveal"><div class="how-num">1</div><div class="how-title">Build Your Estimate</div><div class="how-desc">Use our online estimate builder to select your services and get an instant price guide.</div></div>
+      <div class="how-step reveal"><div class="how-num">2</div><div class="how-title">Site Inspection</div><div class="how-desc">We visit your property to confirm the scope and finalise your official quote.</div></div>
+      <div class="how-step reveal"><div class="how-num">3</div><div class="how-title">Pay 50% Deposit</div><div class="how-desc">Secure your spot with a 50% deposit via bank transfer or cash. We then schedule your job.</div></div>
+      <div class="how-step reveal"><div class="how-num">4</div><div class="how-title">We Get to Work</div><div class="how-desc">Our team arrives on schedule and delivers a flawless, professional finish.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="stats-band">
+  <div class="stats-inner">
+    <div class="stat-item reveal"><div class="stat-big">500+</div><div class="stat-lbl">Projects Completed</div></div>
+    <div class="stat-item reveal"><div class="stat-big">10+</div><div class="stat-lbl">Years Experience</div></div>
+    <div class="stat-item reveal"><div class="stat-big">8</div><div class="stat-lbl">Core Services</div></div>
+    <div class="stat-item reveal"><div class="stat-big">100%</div><div class="stat-lbl">Island-Wide Coverage</div></div>
+  </div>
+</div>
+
+<section class="testimonials-section" id="testimonials">
+  <div class="section-inner">
+    <div class="testimonials-header">
+      <div class="section-eyebrow reveal">Client Reviews</div>
+      <h2 class="section-title reveal">What Our <em>Clients Say</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal"><div class="stars">★★★★★</div><p class="testimonial-text">P&I Finishings transformed my living room with the most beautiful tray ceiling. Professional from start to finish. Highly recommend to anyone in Jamaica.</p><div class="testimonial-author"><div class="testimonial-avatar">MJ</div><div><div class="testimonial-name">Michelle J.</div><div class="testimonial-loc">Kingston, Jamaica</div></div></div></div>
+      <div class="testimonial-card reveal"><div class="stars">★★★★★</div><p class="testimonial-text">Used them for a full commercial drywall job. The team was punctual, clean, and delivered exactly what was promised. Will definitely use again for future projects.</p><div class="testimonial-author"><div class="testimonial-avatar">RB</div><div><div class="testimonial-name">Ricardo B.</div><div class="testimonial-loc">Montego Bay, Jamaica</div></div></div></div>
+      <div class="testimonial-card reveal"><div class="stars">★★★★★</div><p class="testimonial-text">The small room package was perfect for my budget. Got a quote online, they came to inspect, and the work was done within the week. Excellent service.</p><div class="testimonial-author"><div class="testimonial-avatar">TA</div><div><div class="testimonial-name">Tamara A.</div><div class="testimonial-loc">Spanish Town, Jamaica</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="estimate">
+  <div class="section-inner">
+    <div class="cta-inner">
+      <div class="section-eyebrow reveal" style="justify-content:center">Ready to Start?</div>
+      <h2 class="section-title reveal">Get Your <em>Free Estimate</em> Today</h2>
+      <p class="section-desc reveal">Use our instant estimate builder, book a site visit, or call us directly. We cover all of Jamaica.</p>
+      <div class="cta-buttons reveal">
+        <a href="quote.html" class="btn-gold">Build My Estimate</a>
+        <a href="quote.html" class="btn-outline">Book a Site Visit</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">P<span>&</span>I Finishings</div>
+      <div class="footer-tagline">A division of P&I Enterprise Limited</div>
+      <p class="footer-about">Jamaica's trusted drywall and ceiling specialists. Serving homes and businesses island-wide with premium craftsmanship and professional service.</p>
+    </div>
+    <div class="footer-col"><h4>Services</h4><ul>
+      <li><a href="services.html">Residential Drywall</a></li>
+      <li><a href="services.html">Commercial Drywall</a></li>
+      <li><a href="services.html">Tray Ceilings</a></li>
+      <li><a href="services.html">Flat Ceilings</a></li>
+      <li><a href="services.html">Partitions</a></li>
+      <li><a href="services.html">Painting</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Company</h4><ul>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="quote.html">Get Estimate</a></li>
+      <li><a href="quote.html">Book Site Visit</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="tel:+18760000000">+1 (876) 000-0000</a></li>
+      <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f161119103f0f16191611160c171611180c511c1012">[email&#160;protected]</a></li>
+      <li>Jamaica, Island-Wide</li>
+      <li>Mon – Sat: 8am – 6pm</li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 P&I Enterprise Limited. All rights reserved.</span>
+    <span>P&I Finishings — Premium Drywall & Ceiling Specialists, Jamaica</span>
+  </div>
+</footer>
+
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  window.addEventListener('scroll', function() {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+  function openMobileNav()  { document.getElementById('mobileNav').classList.add('open'); }
+  function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); }
+  document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry, i) {
+      if (entry.isIntersecting) {
+        setTimeout(function() { entry.target.class
