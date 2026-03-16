@@ -600,9 +600,6 @@
         <div class="filter-bar" style="margin-bottom:1rem">
           <div class="filter-tabs" id="svcFilterTabs">
             <button class="ftab active" data-sf="all">All <span class="ftab-count" id="sfc-all">0</span></button>
-            <button class="ftab" data-sf="ceiling">Ceilings <span class="ftab-count" id="sfc-ceiling">0</span></button>
-            <button class="ftab" data-sf="drywall">Drywall <span class="ftab-count" id="sfc-drywall">0</span></button>
-            <button class="ftab" data-sf="finishing">Finishing <span class="ftab-count" id="sfc-finishing">0</span></button>
             <button class="ftab" data-sf="active">Live <span class="ftab-count" id="sfc-active">0</span></button>
             <button class="ftab" data-sf="hidden">Hidden <span class="ftab-count" id="sfc-hidden">0</span></button>
           </div>
@@ -622,11 +619,21 @@
             <input type="hidden" id="svcId" />
             <div class="field-group"><label class="field-label">Service Name</label><input class="field-input" id="svcName" placeholder="e.g. Flat Ceiling Installation" /></div>
             <div class="field-group"><label class="field-label">Category</label>
-              <select class="field-input" id="svcCategory">
-                <option value="ceiling">Ceiling</option>
-                <option value="drywall">Drywall</option>
-                <option value="finishing">Finishing</option>
-              </select>
+              <div style="display:flex;gap:0.5rem;align-items:center">
+                <select class="field-input" id="svcCategory" style="flex:1" onchange="checkNewCategory(this)">
+                  <option value="ceiling">Ceiling</option>
+                  <option value="drywall">Drywall</option>
+                  <option value="finishing">Finishing</option>
+                  <option value="__new__">+ Add New Category...</option>
+                </select>
+              </div>
+              <div id="newCatWrap" style="display:none;margin-top:0.5rem;display:none">
+                <input class="field-input" id="newCatInput" placeholder="e.g. Waterproofing" />
+                <div style="display:flex;gap:0.5rem;margin-top:0.4rem">
+                  <button class="drw-btn dark" style="flex:1;padding:0.45rem" onclick="addNewCategory()">✓ Add Category</button>
+                  <button class="drw-btn outline" style="flex:1;padding:0.45rem" onclick="cancelNewCategory()">Cancel</button>
+                </div>
+              </div>
             </div>
             <div class="field-group"><label class="field-label">Description</label><textarea class="field-input" id="svcDesc" rows="3" placeholder="What does this service include?"></textarea></div>
             <div class="sf-row">
@@ -1442,6 +1449,79 @@ document.addEventListener('input', function(e) {
 
 
 
+
+// ── CATEGORY MANAGEMENT ──
+var allCategories = ['ceiling','drywall','finishing'];
+var categoryLabels = {ceiling:'Ceiling', drywall:'Drywall', finishing:'Finishing'};
+
+function buildCategoryOptions(selectedVal) {
+  var opts = allCategories.map(function(cat) {
+    var label = categoryLabels[cat] || (cat.charAt(0).toUpperCase() + cat.slice(1));
+    return '<option value="'+cat+'"'+(cat===selectedVal?' selected':'')+'>'+label+'</option>';
+  });
+  opts.push('<option value="__new__">+ Add New Category...</option>');
+  return opts.join('');
+}
+
+function refreshCategorySelect(selectedVal) {
+  var sel = document.getElementById('svcCategory');
+  if (!sel) return;
+  sel.innerHTML = buildCategoryOptions(selectedVal);
+}
+
+function refreshFilterTabs() {
+  var tabs = document.getElementById('svcFilterTabs');
+  if (!tabs) return;
+  // Keep All, Live, Hidden — rebuild category tabs in between
+  var catTabs = allCategories.map(function(cat) {
+    var label = categoryLabels[cat] || (cat.charAt(0).toUpperCase() + cat.slice(1));
+    var count = allServices.filter(function(s){return s.category===cat;}).length;
+    return '<button class="ftab" data-sf="'+cat+'">'+label+' <span class="ftab-count">'+count+'</span></button>';
+  }).join('');
+  tabs.innerHTML =
+    '<button class="ftab active" data-sf="all">All <span class="ftab-count" id="sfc-all">0</span></button>' +
+    catTabs +
+    '<button class="ftab" data-sf="active">Live <span class="ftab-count" id="sfc-active">0</span></button>' +
+    '<button class="ftab" data-sf="hidden">Hidden <span class="ftab-count" id="sfc-hidden">0</span></button>';
+  // Re-attach click handlers
+  tabs.querySelectorAll('.ftab').forEach(function(btn) {
+    btn.onclick = function() {
+      tabs.querySelectorAll('.ftab').forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active'); svcFilter = btn.dataset.sf; renderServicesGrid();
+    };
+  });
+}
+
+window.checkNewCategory = function(sel) {
+  var wrap = document.getElementById('newCatWrap');
+  if (sel.value === '__new__') {
+    wrap.style.display = 'block';
+    document.getElementById('newCatInput').focus();
+  } else {
+    wrap.style.display = 'none';
+  }
+};
+
+window.addNewCategory = function() {
+  var val = document.getElementById('newCatInput').value.trim().toLowerCase().replace(/\s+/g, '_');
+  var label = document.getElementById('newCatInput').value.trim();
+  if (!val) { showToast('Please enter a category name', 'error'); return; }
+  if (allCategories.includes(val)) { showToast('Category already exists', 'error'); return; }
+  allCategories.push(val);
+  categoryLabels[val] = label;
+  refreshCategorySelect(val);
+  document.getElementById('newCatWrap').style.display = 'none';
+  document.getElementById('newCatInput').value = '';
+  refreshFilterTabs();
+  showToast('Category "'+label+'" added ✓');
+};
+
+window.cancelNewCategory = function() {
+  var sel = document.getElementById('svcCategory');
+  sel.value = allCategories[0];
+  document.getElementById('newCatWrap').style.display = 'none';
+};
+
 // ── SERVICES MANAGER ──
 var allServices = [];
 var svcFilter = 'all';
@@ -1458,17 +1538,22 @@ function loadServices() {
 }
 
 function updateSvcCounts() {
-  var counts = {all:allServices.length, ceiling:0, drywall:0, finishing:0, active:0, hidden:0};
+  // Pull any new categories from loaded services
   allServices.forEach(function(s) {
-    if (counts[s.category] !== undefined) counts[s.category]++;
-    if (s.status === 'active') counts.active++; else counts.hidden++;
+    if (s.category && !allCategories.includes(s.category)) {
+      allCategories.push(s.category);
+      categoryLabels[s.category] = s.category.charAt(0).toUpperCase() + s.category.slice(1).replace(/_/g,' ');
+    }
   });
-  document.getElementById('sfc-all').textContent      = counts.all;
-  document.getElementById('sfc-ceiling').textContent  = counts.ceiling;
-  document.getElementById('sfc-drywall').textContent  = counts.drywall;
-  document.getElementById('sfc-finishing').textContent= counts.finishing;
-  document.getElementById('sfc-active').textContent   = counts.active;
-  document.getElementById('sfc-hidden').textContent   = counts.hidden;
+  var active = allServices.filter(function(s){return s.status==='active';}).length;
+  var hidden = allServices.length - active;
+  var allEl = document.getElementById('sfc-all');
+  var actEl = document.getElementById('sfc-active');
+  var hidEl = document.getElementById('sfc-hidden');
+  if (allEl) allEl.textContent = allServices.length;
+  if (actEl) actEl.textContent = active;
+  if (hidEl) hidEl.textContent = hidden;
+  refreshFilterTabs();
 }
 
 function renderServicesGrid() {
@@ -1488,7 +1573,7 @@ function renderServicesGrid() {
   }
   grid.innerHTML = filtered.map(function(s) {
     var isActive = s.status === 'active';
-    var catLabel = {ceiling:'Ceiling', drywall:'Drywall', finishing:'Finishing'}[s.category] || s.category;
+    var catLabel = categoryLabels[s.category] || (s.category ? s.category.charAt(0).toUpperCase()+s.category.slice(1).replace(/_/g,' ') : 'General');
     var imgHtml = s.photo_url ? '<img src="'+s.photo_url+'" onerror="this.style.display=this.style.display" />' : '<div class="svc-no-img">🔧</div>';
     var badgeHtml = s.badge ? '<span class="badge b-confirmed" style="font-size:10px">'+s.badge+'</span>' : '';
     return '<div class="svc-card '+(isActive?'':'hidden-svc')+'" data-svc-id="'+s.id+'">'+
@@ -1543,7 +1628,7 @@ window.openServiceDrawer = function(id) {
   document.getElementById('svcDrwTitle').textContent = svc ? 'Edit Service' : 'Add Service';
   document.getElementById('svcId').value       = svc ? svc.id : '';
   document.getElementById('svcName').value     = svc ? svc.name||'' : '';
-  document.getElementById('svcCategory').value = svc ? svc.category||'ceiling' : 'ceiling';
+  refreshCategorySelect(svc ? svc.category||'ceiling' : 'ceiling');
   document.getElementById('svcDesc').value     = svc ? svc.description||'' : '';
   document.getElementById('svcPrice').value    = svc ? svc.price||'' : '';
   document.getElementById('svcCost').value     = svc ? svc.cost_price||'' : '';
