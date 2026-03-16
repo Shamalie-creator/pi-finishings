@@ -434,8 +434,8 @@
     <div class="sb-card">
       <div class="sb-head"><div class="sb-title">Need Help?</div></div>
       <div class="sb-body">
-        <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong>+1 (876) 000-0000</strong></span></div>
-        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f79e999198b7879e919e999e849f9e999084d994989a">[email&#160;protected]</a></strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong data-contact="phone">+1 (876) 000-0000</strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></strong></span></div>
         <div class="pay-item"><span class="pay-icon">🕐</span><span>Mon – Sat, 8am – 6pm</span></div>
       </div>
     </div>
@@ -847,6 +847,39 @@ window.addEventListener('DOMContentLoaded', function() {
   .catch(function(){});
 
 }); // end DOMContentLoaded
+</script>
+
+<script>
+// Load company contact details from Supabase settings
+(function() {
+  fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/invoice_settings?id=eq.1&select=phone,email,address,trading,website', {
+    headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!Array.isArray(data) || !data[0]) return;
+    var s = data[0];
+    // Update all phone elements
+    document.querySelectorAll('[data-contact="phone"]').forEach(function(el) {
+      el.textContent = s.phone || el.textContent;
+      if (el.tagName === 'A' && s.phone) el.href = 'tel:' + s.phone.replace(/[^+0-9]/g,'');
+    });
+    // Update all email elements
+    document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
+      el.textContent = s.email || el.textContent;
+      if (el.tagName === 'A' && s.email) el.href = 'mailto:' + s.email;
+    });
+    // Update address
+    document.querySelectorAll('[data-contact="address"]').forEach(function(el) {
+      el.textContent = s.address || el.textContent;
+    });
+    // Update trading name
+    document.querySelectorAll('[data-contact="trading"]').forEach(function(el) {
+      el.textContent = s.trading || el.textContent;
+    });
+  })
+  .catch(function() {});
+})();
 </script>
 </body>
 </html>

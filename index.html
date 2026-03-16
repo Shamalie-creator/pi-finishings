@@ -1037,8 +1037,8 @@
       <li><a href="quote.html">Book Site Visit</a></li>
     </ul></div>
     <div class="footer-col"><h4>Contact</h4><ul>
-      <li><a href="tel:+18760000000">+1 (876) 000-0000</a></li>
-      <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f161119103f0f16191611160c171611180c511c1012">[email&#160;protected]</a></li>
+      <li><a href="tel:+18760000000" data-contact="phone">+1 (876) 000-0000</a></li>
+      <li><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></li>
       <li>Jamaica, Island-Wide</li>
       <li>Mon – Sat: 8am – 6pm</li>
     </ul></div>
@@ -1050,25 +1050,14 @@
 </footer>
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   window.addEventListener('scroll', function() {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
   });
   function openMobileNav()  { document.getElementById('mobileNav').classList.add('open'); }
   function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); }
-
+  document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
   var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
+    entries.forEach(function(entry, i) {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(function(el) {
-    observer.observe(el);
-  });
-</script>
-</body>
-</html>
+        setTimeout(function() { entry.target.class

@@ -307,8 +307,8 @@
     <div class="footer-col">
       <h4>Contact</h4>
       <ul>
-        <li><a href="tel:+18760000000">+1 (876) 000-0000</a></li>
-        <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bfd6d1d9d0ffcfd6d9d6d1d6ccd7d6d1d8cc91dcd0d2">[email&#160;protected]</a></li>
+        <li><a href="tel:+18760000000" data-contact="phone">+1 (876) 000-0000</a></li>
+        <li><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></li>
         <li><a href="#">Jamaica, Island-Wide</a></li>
         <li><a href="#">Mon – Sat: 8am – 6pm</a></li>
       </ul>
@@ -434,6 +434,39 @@ fetch(SUPABASE_URL + '/rest/v1/site_images?select=id,url', {
     if (el && img.url) { el.src = img.url; el.style.opacity = '0.85'; }
   });
 }).catch(function() {});
+</script>
+
+<script>
+// Load company contact details from Supabase settings
+(function() {
+  fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/invoice_settings?id=eq.1&select=phone,email,address,trading,website', {
+    headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (!Array.isArray(data) || !data[0]) return;
+    var s = data[0];
+    // Update all phone elements
+    document.querySelectorAll('[data-contact="phone"]').forEach(function(el) {
+      el.textContent = s.phone || el.textContent;
+      if (el.tagName === 'A' && s.phone) el.href = 'tel:' + s.phone.replace(/[^+0-9]/g,'');
+    });
+    // Update all email elements
+    document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
+      el.textContent = s.email || el.textContent;
+      if (el.tagName === 'A' && s.email) el.href = 'mailto:' + s.email;
+    });
+    // Update address
+    document.querySelectorAll('[data-contact="address"]').forEach(function(el) {
+      el.textContent = s.address || el.textContent;
+    });
+    // Update trading name
+    document.querySelectorAll('[data-contact="trading"]').forEach(function(el) {
+      el.textContent = s.trading || el.textContent;
+    });
+  })
+  .catch(function() {});
+})();
 </script>
 </body>
 </html>
