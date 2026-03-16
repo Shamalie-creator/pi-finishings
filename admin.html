@@ -39,11 +39,10 @@
     .login-hint b{color:var(--charcoal)}
 
     /* APP */
-    #app{display:none;height:100vh;overflow:hidden;flex-direction:row}
-    #app.show{display:flex}
+    #app{display:none;height:100vh;overflow:hidden}
+    #app.show{display:flex!important;flex-direction:row}
 
     /* APP LAYOUT */
-    #app.show{display:flex!important}
 
     /* SIDEBAR */
     .sidebar{width:var(--sidebar);background:#2c3e50;display:flex;flex-direction:column;height:100vh;flex-shrink:0;overflow-y:auto}
@@ -303,6 +302,22 @@
     .tb-time{font-size:13px;color:#718096;font-family:Arial,Helvetica,sans-serif}
     /* Override old sidebar CSS */
     .sb-brand,.sb-section,.sb-logo,.sb-tag,.sb-foot,.sb-user,.sb-avatar,.sb-uname,.sb-urole{display:none}
+
+    /* IMAGES PANEL */
+    .images-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem}
+    .img-card{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+    .img-card-preview{height:180px;overflow:hidden;position:relative;background:#1a1a1a}
+    .img-card-preview img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.3s}
+    .img-card-preview .img-no-photo{display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.2);font-size:2.5rem}
+    .img-card-body{padding:1rem}
+    .img-card-label{font-weight:600;font-size:14px;color:var(--charcoal);margin-bottom:0.6rem}
+    .img-url-input{width:100%;padding:0.5rem 0.7rem;border:1.5px solid var(--border);border-radius:4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;outline:none;margin-bottom:0.6rem;color:var(--charcoal)}
+    .img-url-input:focus{border-color:var(--charcoal)}
+    .img-card-actions{display:flex;gap:0.5rem}
+    .img-save-btn{flex:1;padding:0.5rem;background:var(--charcoal);color:var(--gold);border:none;border-radius:4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s}
+    .img-save-btn:hover{background:#2a2a2a}
+    .img-reset-btn{padding:0.5rem 0.7rem;background:none;border:1.5px solid var(--border);border-radius:4px;font-family:Arial,Helvetica,sans-serif;font-size:12px;cursor:pointer;color:var(--muted)}
+    .img-reset-btn:hover{border-color:var(--red);color:var(--red)}
   </style>
 </head>
 <body>
@@ -337,7 +352,7 @@
         <div class="nav-item" data-panel="payroll"><span class="nav-icon">💰</span>Payroll</div>
         <div class="nav-item" data-panel="payments"><span class="nav-icon">🏦</span>Payments</div>
         <div class="nav-item" data-panel="services"><span class="nav-icon">🔧</span>Services</div>
-        <div class="nav-item" data-panel="gallery"><span class="nav-icon">🖼</span>Gallery</div>
+        <div class="nav-item" data-panel="gallery"><span class="nav-icon">🖼</span>Images</div>
         <div class="nav-item" data-panel="marketing"><span class="nav-icon">📣</span>Marketing</div>
         <div class="nav-item" data-panel="settings"><span class="nav-icon">⚙️</span>Settings</div>
       </nav>
@@ -551,7 +566,12 @@
       <!-- ══ COMING SOON ══ -->
       <div class="panel" id="panel-payments"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">🏦</div><div class="cs-title">Payments Manager</div><p class="cs-desc">Review deposit submissions, view proof of payment, approve or reject deposits.</p></div></div>
       <div class="panel" id="panel-services"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">🔧</div><div class="cs-title">Services Manager</div><p class="cs-desc">Add, edit and reorder your services. Update pricing and descriptions.</p></div></div>
-      <div class="panel" id="panel-gallery"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">🖼</div><div class="cs-title">Gallery Manager</div><p class="cs-desc">Upload project photos and manage your portfolio gallery.</p></div></div>
+      <!-- ══ IMAGES ══ -->
+      <div class="panel" id="panel-gallery">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--charcoal);margin-bottom:0.3rem">Site Images</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:1.4rem;line-height:1.7">Update the photos shown on your website. Paste in a new image URL or upload a photo to get a link. Changes go live immediately.</p>
+        <div class="images-grid" id="imagesGrid"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+      </div>
       <div class="panel" id="panel-marketing"><div class="coming-soon"><div class="cs-tag">Coming Soon</div><div class="cs-icon">📣</div><div class="cs-title">Marketing</div><p class="cs-desc">Manage testimonials, blog posts and view traffic analytics.</p></div></div>
 
       </div><!-- end content -->
@@ -689,7 +709,7 @@ function doLogin(){
     document.getElementById('lPass').value='';
   }
 }
-document.getElementById('lBtn').onclick = doLogin;
+try{document.getElementById('lBtn').onclick = doLogin;}catch(e){}
 document.getElementById('lPass').onkeydown = function(e){if(e.key==='Enter') doLogin();};
 document.getElementById('lUser').onkeydown = function(e){if(e.key==='Enter') document.getElementById('lPass').focus();};
 ['lUser','lPass'].forEach(function(id){
@@ -708,7 +728,7 @@ document.getElementById('logoutBtn').onclick=function(){
 };
 
 // ── PANEL SWITCHING ──
-var panelNames={overview:'Overview',jobs:'Jobs',workers:'Workers',payroll:'Payroll',payments:'Payments',services:'Services',gallery:'Gallery',marketing:'Marketing',settings:'Settings'};
+var panelNames={overview:'Overview',jobs:'Jobs',workers:'Workers',payroll:'Payroll',payments:'Payments',services:'Services',gallery:'Site Images',marketing:'Marketing',settings:'Settings'};
 function switchPanel(name){
   document.querySelectorAll('.nav-item').forEach(function(el){el.classList.toggle('active',el.dataset.panel===name);});
   document.querySelectorAll('.panel').forEach(function(el){el.classList.remove('active');});
@@ -717,6 +737,7 @@ function switchPanel(name){
   document.getElementById('tbTitle').textContent=panelNames[name]||name;
   document.getElementById('content').scrollTop=0;
   if(name==='payroll') renderPayroll();
+  if(name==='gallery') renderImagesGrid();
 }
 document.querySelectorAll('.nav-item').forEach(function(el){
   el.onclick=function(){if(el.dataset.panel) switchPanel(el.dataset.panel);};
@@ -736,7 +757,7 @@ var jobFilter='all', jobSearch='', currentJob=null, currentWorker=null;
 
 function refreshData(){
   showToast('Refreshing...','success');
-  Promise.all([loadJobs(),loadWorkers(),loadSettings()]).then(function(r){
+  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages()]).then(function(r){
     loadOverview(r[0]);
     showToast('Data refreshed ✓');
   });
@@ -902,8 +923,8 @@ function closeJobDrawer(){
   document.getElementById('jobDrawer').classList.remove('open');
   currentJob=null;
 }
-document.getElementById('jobDrwClose').onclick=closeJobDrawer;
-document.getElementById('jobOverlay').onclick=closeJobDrawer;
+try{document.getElementById('jobDrwClose').onclick=closeJobDrawer;}catch(e){}
+try{document.getElementById('jobOverlay').onclick=closeJobDrawer;}catch(e){}
 
 document.querySelectorAll('#jobFilterTabs .ftab').forEach(function(btn){
   btn.onclick=function(){
@@ -1011,7 +1032,7 @@ function closeWorkerDrawer(){
   document.getElementById('workerDrawer').classList.remove('open');
   currentWorker=null;
 }
-document.getElementById('workerOverlay').onclick=closeWorkerDrawer;
+try{document.getElementById('workerOverlay').onclick=closeWorkerDrawer;}catch(e){}
 
 // ── PAYROLL ──
 function renderPayroll(){
@@ -1081,7 +1102,7 @@ function closeEmailModal(){
   document.getElementById('emailOverlay').classList.remove('open');
   document.getElementById('emailModal').classList.remove('open');
 }
-document.getElementById('emailOverlay').onclick=closeEmailModal;
+try{document.getElementById('emailOverlay').onclick=closeEmailModal;}catch(e){}
 
 // ── OVERVIEW ──
 function loadOverview(jobs){
@@ -1181,13 +1202,13 @@ function closeInvModal(){
   document.getElementById('invModal').classList.remove('open');
   invoiceTarget=null;
 }
-document.getElementById('invOverlay').onclick=closeInvModal;
+try{document.getElementById('invOverlay').onclick=closeInvModal;}catch(e){}
 
 window.downloadInvoice=function(){
   if(!invoiceTarget) return;
   var html=buildInvoiceHTML(invoiceTarget);
   var win=window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice '+invoiceTarget.ref+'</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"><style>body{margin:0;padding:2rem;background:#fff;font-family:Outfit,sans-serif}'+document.querySelector('style').textContent+'</style></head><body>'+html+'<script>window.onload=function(){window.print();}<\/script></body></html>');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice '+invoiceTarget.ref+'</title><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet"><style>body{margin:0;padding:2rem;background:#fff;font-family:Outfit,sans-serif}'+document.querySelector('style').textContent+'</style></head><body>'+html+'<scr'+'ipt>window.onload=function(){window.print();}</'+'script></body></html>');
   win.document.close();
 };
 
@@ -1202,6 +1223,106 @@ window.previewSampleInvoice=function(){
   var sample=allJobs[0]||{ref:'PI-000001',name:'Sample Customer',parish:'Kingston',phone:'876-000-0000',email:'sample@email.com',services:'Flat Ceiling (320 sq ft)',amount:96000,deposit:48000};
   openInvoiceModal(sample);
 };
+
+
+// ── IMAGES ──
+var allSiteImages = [];
+
+var defaultImages = {
+  'hero':                'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=80',
+  'flat-ceiling':        'https://images.unsplash.com/photo-1615873968403-89e068629265?w=800&q=80',
+  'tray-ceiling':        'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80',
+  'residential-drywall': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80',
+  'commercial-drywall':  'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80',
+  'partition-walls':     'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=800&q=80',
+  'small-room-package':  'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80',
+  'built-in-shelves':    'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80',
+  'painting':            'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80'
+};
+
+var imageLabels = {
+  'hero':                '🏠 Homepage Hero',
+  'flat-ceiling':        '⬜ Flat Ceiling',
+  'tray-ceiling':        '✦ Tray & Decorative Ceilings',
+  'residential-drywall': '🏠 Residential Drywall',
+  'commercial-drywall':  '🏢 Commercial Drywall',
+  'partition-walls':     '▦ Partition Walls',
+  'small-room-package':  '🛏 Small Room Package',
+  'built-in-shelves':    '📚 Built-in Shelves',
+  'painting':            '🎨 Painting'
+};
+
+function loadSiteImages() {
+  return sbGet('site_images').then(function(data) {
+    allSiteImages = Array.isArray(data) ? data : [];
+    renderImagesGrid();
+    return allSiteImages;
+  }).catch(function() {
+    allSiteImages = [];
+    renderImagesGrid();
+  });
+}
+
+function renderImagesGrid() {
+  var grid = document.getElementById('imagesGrid');
+  if (!grid) return;
+  var ids = Object.keys(imageLabels);
+  grid.innerHTML = ids.map(function(id) {
+    var saved = allSiteImages.find(function(img) { return img.id === id; });
+    var url = saved ? saved.url : defaultImages[id] || '';
+    return '<div class="img-card" id="imgcard-' + id + '">'+
+      '<div class="img-card-preview">'+
+        '<img src="' + url + '" alt="' + imageLabels[id] + '" onerror="this.style.opacity=0" />'+
+      '</div>'+
+      '<div class="img-card-body">'+
+        '<div class="img-card-label">' + imageLabels[id] + '</div>'+
+        '<input class="img-url-input" id="imgurl-' + id + '" value="' + url + '" placeholder="Paste image URL here..." />'+
+        '<div class="img-card-actions">'+
+          '<button class="img-save-btn" onclick="saveImageUrl(\'' + id + '\')">💾 Save</button>'+
+          '<button class="img-reset-btn" onclick="resetImage(\'' + id + '\')">Reset</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+window.saveImageUrl = function(id) {
+  var input = document.getElementById('imgurl-' + id);
+  var url = input.value.trim();
+  if (!url) { showToast('Please enter a URL', 'error'); return; }
+  var data = { id: id, url: url, label: imageLabels[id], updated_at: new Date().toISOString() };
+  sbUpsert('site_images', data).then(function() {
+    // Update preview
+    var card = document.getElementById('imgcard-' + id);
+    if (card) card.querySelector('img').src = url;
+    // Update in local array
+    var existing = allSiteImages.find(function(img) { return img.id === id; });
+    if (existing) existing.url = url; else allSiteImages.push(data);
+    showToast(imageLabels[id] + ' updated ✓');
+  }).catch(function() { showToast('Failed to save', 'error'); });
+};
+
+window.resetImage = function(id) {
+  if (!confirm('Reset to default image?')) return;
+  var url = defaultImages[id];
+  document.getElementById('imgurl-' + id).value = url;
+  saveImageUrl(id);
+};
+
+// Update url preview live as you type
+document.addEventListener('input', function(e) {
+  try {
+    if (e.target && e.target.classList.contains('img-url-input')) {
+      var id = e.target.id.replace('imgurl-', '');
+      var card = document.getElementById('imgcard-' + id);
+      if (card) {
+        var img = card.querySelector('img');
+        img.style.opacity = '1';
+        img.src = e.target.value;
+      }
+    }
+  } catch(e) {}
+});
 
 // ── INIT ──
 function initDashboard(){
@@ -1218,7 +1339,7 @@ function initDashboard(){
     document.getElementById('tbTime').textContent=(hh>12?hh-12:hh||12)+':'+mm+(hh>=12?' PM':' AM');
   },1000);
 
-  Promise.all([loadJobs(),loadWorkers(),loadSettings()]).then(function(r){
+  Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages()]).then(function(r){
     loadOverview(r[0]);
   });
 }

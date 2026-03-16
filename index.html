@@ -878,7 +878,10 @@
     <div class="hero-right">
       <div class="hero-card-stack">
         <div class="hero-card hero-card-main">
-          <div class="hero-card-img">🏠</div>
+          <!-- PHOTO: replace "images/hero-project.jpg" with your real photo path -->
+          <div class="hero-card-img">
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=80" alt="Featured Project" data-img-id="hero" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:cover;display:block" />
+          </div>
           <div class="hero-card-overlay">
             <div class="hero-card-label">Featured Project</div>
             <div class="hero-card-text">Luxury Tray Ceiling — Kingston</div>
@@ -997,7 +1000,7 @@
     </ul></div>
     <div class="footer-col"><h4>Contact</h4><ul>
       <li><a href="tel:+18760000000">+1 (876) 000-0000</a></li>
-      <li>info@pifinishings.com</li>
+      <li><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f161119103f0f16191611160c171611180c511c1012">[email&#160;protected]</a></li>
       <li>Jamaica, Island-Wide</li>
       <li>Mon – Sat: 8am – 6pm</li>
     </ul></div>
@@ -1009,7 +1012,7 @@
 </footer>
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   window.addEventListener('scroll', function() {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
   });
@@ -1019,12 +1022,4 @@
   var observer = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry, i) {
       if (entry.isIntersecting) {
-        setTimeout(function() { entry.target.classList.add('visible'); }, i * 80);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.05 });
-  document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
-</script>
-</body>
-</html>
+        setTimeout(function() { entry.target.class

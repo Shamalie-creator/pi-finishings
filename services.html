@@ -227,7 +227,7 @@
       <div class="service-card reveal" data-category="ceiling">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/flat-ceiling.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1615873968403-89e068629265?w=800&q=80" alt="Flat Ceiling Installation" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1615873968403-89e068629265?w=800&q=80" alt="Flat Ceiling Installation" data-img-id="flat-ceiling" onerror="this.style.display='none'" />
           <div class="service-card-badge">Most Popular</div>
         </div>
         <div class="service-card-body">
@@ -250,7 +250,7 @@
       <div class="service-card reveal" data-category="ceiling">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/tray-ceiling.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80" alt="Tray & Decorative Ceilings" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=80" alt="Tray & Decorative Ceilings" data-img-id="tray-ceiling" onerror="this.style.display='none'" />
           <div class="service-card-badge">Luxury</div>
         </div>
         <div class="service-card-body">
@@ -273,7 +273,7 @@
       <div class="service-card reveal" data-category="drywall">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/residential-drywall.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" alt="Residential Drywall" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" alt="Residential Drywall" data-img-id="residential-drywall" onerror="this.style.display='none'" />
         </div>
         <div class="service-card-body">
           <div class="service-card-name">Residential Drywall</div>
@@ -295,7 +295,7 @@
       <div class="service-card reveal" data-category="drywall">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/commercial-drywall.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80" alt="Commercial Drywall" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80" alt="Commercial Drywall" data-img-id="commercial-drywall" onerror="this.style.display='none'" />
         </div>
         <div class="service-card-body">
           <div class="service-card-name">Commercial Drywall</div>
@@ -317,7 +317,7 @@
       <div class="service-card reveal" data-category="drywall">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/partition-walls.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=800&q=80" alt="Partition Walls" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=800&q=80" alt="Partition Walls" data-img-id="partition-walls" onerror="this.style.display='none'" />
         </div>
         <div class="service-card-body">
           <div class="service-card-name">Partition Walls</div>
@@ -339,7 +339,7 @@
       <div class="service-card reveal" data-category="drywall">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/small-room-package.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80" alt="Small Room Package" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80" alt="Small Room Package" data-img-id="small-room-package" onerror="this.style.display='none'" />
           <div class="service-card-badge">Best Value</div>
         </div>
         <div class="service-card-body">
@@ -362,7 +362,7 @@
       <div class="service-card reveal" data-category="finishing">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/built-in-shelves.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80" alt="Built-in Shelves" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=800&q=80" alt="Built-in Shelves" data-img-id="built-in-shelves" onerror="this.style.display='none'" />
         </div>
         <div class="service-card-body">
           <div class="service-card-name">Built-in Shelves</div>
@@ -384,7 +384,7 @@
       <div class="service-card reveal" data-category="finishing">
         <div class="service-card-img">
           <!-- PHOTO: replace "images/painting.jpg" with your real photo path -->
-          <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80" alt="Painting" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80" alt="Painting" data-img-id="painting" onerror="this.style.display='none'" />
         </div>
         <div class="service-card-body">
           <div class="service-card-name">Painting</div>
@@ -533,6 +533,27 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
 });
+</script>
+
+<script>
+// Load images from Supabase and apply to page
+(function() {
+  fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/site_images?select=id,url', {
+    headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ' }
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(images) {
+    if (!Array.isArray(images)) return;
+    images.forEach(function(img) {
+      var el = document.querySelector('[data-img-id="' + img.id + '"]');
+      if (el && img.url) {
+        el.src = img.url;
+        el.style.opacity = '0.85';
+      }
+    });
+  })
+  .catch(function() {}); // fail silently, fallback images remain
+})();
 </script>
 </body>
 </html>
