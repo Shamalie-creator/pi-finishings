@@ -501,15 +501,17 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   // ── STEP 2 ──
-  document.querySelectorAll('.service-check').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var key = el.getAttribute('data-service');
-      var svcName = el.querySelector('.service-check-name') ? el.querySelector('.service-check-name').textContent : key;
-      if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
-      else { state.services[key] = svcName; el.classList.add('checked'); }
-      updateEstimate();
-      updateSummary();
-    });
+  // Use event delegation so it works even after dynamic services load
+  document.getElementById('serviceList').addEventListener('click', function(e) {
+    var el = e.target.closest('.service-check');
+    if (!el) return;
+    var key = el.getAttribute('data-service');
+    if (!key) return;
+    var svcName = el.querySelector('.service-check-name') ? el.querySelector('.service-check-name').textContent.trim() : key;
+    if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
+    else { state.services[key] = svcName; el.classList.add('checked'); }
+    updateEstimate();
+    updateSummary();
   });
   document.getElementById('btnStep2Back').addEventListener('click', function() { goToStep(1); });
   document.getElementById('btnStep2Next').addEventListener('click', function() {
