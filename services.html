@@ -458,15 +458,4 @@ fetch(SUPABASE_URL + '/rest/v1/site_images?select=id,url', {
     });
     // Update address
     document.querySelectorAll('[data-contact="address"]').forEach(function(el) {
-      el.textContent = s.address || el.textContent;
-    });
-    // Update trading name
-    document.querySelectorAll('[data-contact="trading"]').forEach(function(el) {
-      el.textContent = s.trading || el.textContent;
-    });
-  })
-  .catch(function() {});
-})();
-</script>
-</body>
-</html>
+      el.textContent = s.address || el.text
