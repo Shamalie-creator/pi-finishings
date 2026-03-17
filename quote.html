@@ -435,14 +435,14 @@
       <div class="sb-head"><div class="sb-title">Need Help?</div></div>
       <div class="sb-body">
         <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong data-contact="phone">+1 (876) 000-0000</strong></span></div>
-        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="/cdn-cgi/l/email-protection#bfd6d1d9d0ffcfd6d9d6d1d6ccd7d6d1d8cc91dcd0d2" data-contact="email"><span class="__cf_email__" data-cfemail="81e8efe7eec1f1e8e7e8efe8f2e9e8efe6f2afe2eeec">[email&#160;protected]</span></a></strong></span></div>
         <div class="pay-item"><span class="pay-icon">🕐</span><span>Mon – Sat, 8am – 6pm</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('DOMContentLoaded', function() {
 
   var SUPABASE_URL = 'https://eobwndomdnaxrhiqotay.supabase.co';
@@ -557,7 +557,7 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
   document.getElementById('btnStep3Back').addEventListener('click', function() { goToStep(2); });
-  document.getElementById('btnStep3Next').addEventListener('click', function() { goToStep(4); });
+  document.getElementById('btnStep3Next').addEventListener('click', function() { goToStep(4); renderCalendar(); });
 
   // ── STEP 4: PROPERTY CARDS ──
   document.querySelectorAll('.prop-card').forEach(function(card) {
@@ -571,6 +571,9 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   // CALENDAR
+  // Render calendar on load
+  window.addEventListener("load", function() { renderCalendar(); });
+
   function renderCalendar() {
     var today = new Date(); today.setHours(0,0,0,0);
     var minDate = new Date(today); minDate.setDate(minDate.getDate() + 2);
@@ -866,9 +869,4 @@ window.addEventListener('DOMContentLoaded', function() {
     });
     // Update all email elements
     document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
-      el.textContent = s.email || el.textContent;
-      if (el.tagName === 'A' && s.email) el.href = 'mailto:' + s.email;
-    });
-    // Update address
-    document.querySelectorAll('[data-contact="address"]').forEach(function(el) {
-      el.textContent = s.address || el.text
+      el.textContent = s.emai
