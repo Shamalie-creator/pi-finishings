@@ -1248,10 +1248,13 @@ var allJobs=[], allWorkers=[], invoiceSettings={};
 var jobFilter='all', jobSearch='', currentJob=null, currentWorker=null;
 
 function refreshData(){
+  var btn = document.querySelector('.tb-refresh');
+  if (btn) { btn.textContent = '↻'; btn.style.opacity = '0.5'; }
   showToast('Refreshing...','success');
   Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices(),loadExpenses()]).then(function(r){
     loadOverview(r[0]);
     showToast('Data refreshed ✓');
+    var btn = document.querySelector('.tb-refresh'); if (btn) { btn.style.opacity = '1'; }
   });
 }
 
@@ -3170,6 +3173,13 @@ function initDashboard(){
   Promise.all([loadJobs(),loadWorkers(),loadSettings(),loadSiteImages(),loadServices(),loadExpenses()]).then(function(r){
     loadOverview(r[0]);
   });
+
+  // Auto-refresh jobs every 60 seconds so new quotes appear without signing out
+  setInterval(function(){
+    loadJobs().then(function(jobs){
+      loadOverview(jobs);
+    });
+  }, 60000);
 }
 </script>
 </body>
