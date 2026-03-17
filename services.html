@@ -307,10 +307,10 @@
     <div class="footer-col">
       <h4>Contact</h4>
       <ul>
-        <li><a href="tel:+18760000000" data-contact="phone">+1 (876) 000-0000</a></li>
+        <li><a href="tel:+18760000000" data-contact="phone" data-contact="phone">+1 (876) 000-0000</a></li>
         <li><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></li>
         <li><a href="#">Jamaica, Island-Wide</a></li>
-        <li><a href="#"><span data-contact="hours">Mon – Sat: 8am – 6pm</span></a></li>
+        <li><a href="#"><span data-contact="hours" data-contact="hours">Mon – Sat: 8am – 6pm</span></a></li>
       </ul>
     </div>
   </div>
@@ -321,7 +321,7 @@
 </footer>
 
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('DOMContentLoaded', function() {
 
   // Navbar scroll
@@ -435,9 +435,7 @@ fetch(SUPABASE_URL + '/rest/v1/site_images?select=id,url', {
   });
 }).catch(function() {});
 </script>
-
 <script>
-// Load company contact details from Supabase settings
 (function() {
   fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/invoice_settings?id=eq.1&select=phone,email,hours,address,trading,website', {
     headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ' }
@@ -446,11 +444,27 @@ fetch(SUPABASE_URL + '/rest/v1/site_images?select=id,url', {
   .then(function(data) {
     if (!Array.isArray(data) || !data[0]) return;
     var s = data[0];
-    // Update all phone elements
-    document.querySelectorAll('[data-contact="phone"]').forEach(function(el) {
-      el.textContent = s.phone || el.textContent;
-      if (el.tagName === 'A' && s.phone) el.href = 'tel:' + s.phone.replace(/[^+0-9]/g,'');
-    });
-    // Update all email elements
-    document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
-      el.textContent = s.emai
+    if (s.phone) {
+      document.querySelectorAll('[data-contact="phone"]').forEach(function(el) {
+        el.textContent = s.phone;
+        var a = el.closest('a') || (el.tagName==='A'?el:null);
+        if (a) a.href = 'tel:' + s.phone.replace(/[^+0-9]/g,'');
+      });
+    }
+    if (s.email) {
+      document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
+        el.textContent = s.email;
+        var a = el.closest('a') || (el.tagName==='A'?el:null);
+        if (a) a.href = 'mailto:' + s.email;
+      });
+    }
+    if (s.hours) {
+      document.querySelectorAll('[data-contact="hours"]').forEach(function(el) {
+        el.textContent = s.hours;
+      });
+    }
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>

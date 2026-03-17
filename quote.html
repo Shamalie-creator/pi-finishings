@@ -434,15 +434,15 @@
     <div class="sb-card">
       <div class="sb-head"><div class="sb-title">Need Help?</div></div>
       <div class="sb-body">
-        <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong data-contact="phone">+1 (876) 000-0000</strong></span></div>
+        <div class="pay-item"><span class="pay-icon">📞</span><span>Call us: <strong data-contact="phone" data-contact="phone">+1 (876) 000-0000</strong></span></div>
         <div class="pay-item"><span class="pay-icon">📧</span><span>Email: <strong><a href="mailto:info@pifinishings.com" data-contact="email">info@pifinishings.com</a></strong></span></div>
-        <div class="pay-item"><span class="pay-icon">🕐</span><span data-contact="hours">Mon – Sat, 8am – 6pm</span></div>
+        <div class="pay-item"><span class="pay-icon">🕐</span><span data-contact="hours" data-contact="hours">Mon – Sat, 8am – 6pm</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 window.addEventListener('DOMContentLoaded', function() {
 
   var SUPABASE_URL = 'https://eobwndomdnaxrhiqotay.supabase.co';
@@ -860,22 +860,36 @@ window.addEventListener('DOMContentLoaded', function() {
 
 }); // end DOMContentLoaded
 </script>
-
 <script>
-// Load company contact details from Supabase settings
 (function() {
-  fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/invoice_settings?id=eq.1&select=phone,email,address,trading,website', {
+  fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/invoice_settings?id=eq.1&select=phone,email,hours,address,trading,website', {
     headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ' }
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
     if (!Array.isArray(data) || !data[0]) return;
     var s = data[0];
-    // Update all phone elements
-    document.querySelectorAll('[data-contact="phone"]').forEach(function(el) {
-      el.textContent = s.phone || el.textContent;
-      if (el.tagName === 'A' && s.phone) el.href = 'tel:' + s.phone.replace(/[^+0-9]/g,'');
-    });
-    // Update all email elements
-    document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
-      el.textContent = s.emai
+    if (s.phone) {
+      document.querySelectorAll('[data-contact="phone"]').forEach(function(el) {
+        el.textContent = s.phone;
+        var a = el.closest('a') || (el.tagName==='A'?el:null);
+        if (a) a.href = 'tel:' + s.phone.replace(/[^+0-9]/g,'');
+      });
+    }
+    if (s.email) {
+      document.querySelectorAll('[data-contact="email"]').forEach(function(el) {
+        el.textContent = s.email;
+        var a = el.closest('a') || (el.tagName==='A'?el:null);
+        if (a) a.href = 'mailto:' + s.email;
+      });
+    }
+    if (s.hours) {
+      document.querySelectorAll('[data-contact="hours"]').forEach(function(el) {
+        el.textContent = s.hours;
+      });
+    }
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>
