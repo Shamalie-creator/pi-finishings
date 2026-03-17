@@ -834,8 +834,8 @@ window.addEventListener('DOMContentLoaded', function() {
   // ── SUPABASE SERVICE LOADER ──
   fetch('https://eobwndomdnaxrhiqotay.supabase.co/rest/v1/services?status=eq.active&order=sort_order.asc', {
     headers: {
-      'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvYnduZG9tZG5heHJoaXFvdGF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NTM2NDcsImV4cCI6MjA4ODIyOTY0N30.VsFACmFDW_NhqlXq7HLDJT56wt1yqdJoiiwXdNAzSJQ'
+      'apikey': ANON_KEY,
+      'Authorization': 'Bearer ' + ANON_KEY
     }
   })
   .then(function(r){ return r.json(); })
@@ -845,7 +845,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (!list) return;
     list.innerHTML = data.map(function(s){
       var hint = s.description ? s.description.substring(0,55)+'...' : '';
-      return '<div class="service-check" data-service="'+s.id+'" data-name="'+s.name.replace(/"/g,'&quot;')+'">' +
+      return '<div class="service-check" data-service="'+s.id+'">' +
         '<div class="custom-check">✓</div>' +
         '<div class="service-check-info">' +
           '<div class="service-check-name">'+s.name+'</div>' +
@@ -854,15 +854,7 @@ window.addEventListener('DOMContentLoaded', function() {
         '<div class="service-check-price">'+(s.price||'Quote on request')+'</div>' +
       '</div>';
     }).join('');
-    list.querySelectorAll('.service-check').forEach(function(el){
-      el.addEventListener('click', function(){
-        var key  = el.dataset.service;
-        var name = el.querySelector('.service-check-name') ? el.querySelector('.service-check-name').textContent.trim() : (el.dataset.name||key);
-        if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
-        else { state.services[key] = name; el.classList.add('checked'); }
-        updateSummary();
-      });
-    });
+    // clicks handled by event delegation on #serviceList - no extra handlers needed
   })
   .catch(function(){});
 
