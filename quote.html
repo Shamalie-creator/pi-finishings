@@ -504,8 +504,9 @@ window.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.service-check').forEach(function(el) {
     el.addEventListener('click', function() {
       var key = el.getAttribute('data-service');
+      var svcName = el.querySelector('.service-check-name') ? el.querySelector('.service-check-name').textContent : key;
       if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
-      else { state.services[key] = true; el.classList.add('checked'); }
+      else { state.services[key] = svcName; el.classList.add('checked'); }
       updateEstimate();
       updateSummary();
     });
@@ -519,9 +520,9 @@ window.addEventListener('DOMContentLoaded', function() {
   // ── STEP 3: CONDITIONAL FIELDS ──
   function renderConditionals() {
     var html = '';
-    var hasCeiling = state.services.flat_ceiling || state.services.tray_ceiling;
-    var hasPartition = state.services.partition;
-    var hasPaint = state.services.painting;
+    var hasCeiling = Object.values(state.services).some(function(n){ return typeof n==='string' && n.toLowerCase().indexOf('ceiling')>=0; });
+    var hasPartition = Object.values(state.services).some(function(n){ return typeof n==='string' && n.toLowerCase().indexOf('partition')>=0; });
+    var hasPaint = Object.values(state.services).some(function(n){ return typeof n==='string' && n.toLowerCase().indexOf('paint')>=0; });
     if (hasCeiling) {
       html += '<div class="field-group"><label class="field-label">Ceiling Type</label><div class="radio-group" id="ceilingTypeGroup">' +
         '<div class="radio-option'+(state.ceilingType==='flat'?' selected':'')+'" data-ct="flat">Flat</div>' +
@@ -721,18 +722,7 @@ window.addEventListener('DOMContentLoaded', function() {
       status:        'Submitted'
     };
 
-    fetch(SUPABASE_URL+'/rest/v1/estimates', {
-      method: 'POST',
-      headers: {
-        'apikey': ANON_KEY,
-        'Authorization': 'Bearer '+ANON_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify(payload)
-    })
-    .catch(function(){})
-    .finally(function(){
+    function showSuccess() {
       document.getElementById('refNum').textContent = payload.ref;
       document.getElementById('successSummary').innerHTML =
         sRow('Services', servicesList) +
@@ -745,6 +735,30 @@ window.addEventListener('DOMContentLoaded', function() {
       document.getElementById('stepTitle').textContent = 'Request Submitted!';
       document.getElementById('stepSub').textContent = "We'll confirm your appointment within 24 hours.";
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    fetch(SUPABASE_URL+'/rest/v1/estimates', {
+      method: 'POST',
+      headers: {
+        'apikey': ANON_KEY,
+        'Authorization': 'Bearer '+ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error('Save failed: '+r.status);
+      return r.json();
+    })
+    .then(function() {
+      showSuccess();
+    })
+    .catch(function(err) {
+      console.error('Submission error:', err);
+      btn.disabled = false;
+      btn.textContent = 'Submit Request →';
+      alert('There was a problem submitting your request. Please try again or call us directly.');
     });
   });
 
@@ -763,18 +777,19 @@ window.addEventListener('DOMContentLoaded', function() {
     var rate = state.projectType==='commercial' ? 350 : 300;
 
     Object.keys(state.services).forEach(function(svc) {
-      // service names already stored as values
-      var name = state.services[svc]||svc;
-      if (svc==='flat_ceiling'||svc==='tray_ceiling') {
+      var name = (typeof state.services[svc] === 'string') ? state.services[svc] : svc;
+      var nameLower = name.toLowerCase();
+      // Match by service name keywords
+      if (nameLower.indexOf('flat ceiling') >= 0 || nameLower.indexOf('tray') >= 0 || nameLower.indexOf('ceiling') >= 0) {
         if (area>0) { var cost=area*rate; total+=cost; lines.push(name+': JMD '+cost.toLocaleString()+' ('+area+' sq ft)'); }
         else lines.push(name+': Enter dimensions for price');
-      } else if (svc==='partition') {
-        if (area>0) { var cost2=area*pricing.partition; total+=cost2; lines.push(name+': JMD '+cost2.toLocaleString()); }
+      } else if (nameLower.indexOf('partition') >= 0) {
+        if (area>0) { var cost2=area*180; total+=cost2; lines.push(name+': JMD '+cost2.toLocaleString()); }
         else lines.push(name+': Enter dimensions for price');
-      } else if (svc==='small_room') {
-        total+=45000; lines.push(name+': JMD 45,000');
-      } else if (svc==='painting') {
-        if (paintArea>0) { var cost3=paintArea*pricing.painting; total+=cost3; lines.push(name+': JMD '+cost3.toLocaleString()); }
+      } else if (nameLower.indexOf('small room') >= 0) {
+        total+=150000; lines.push(name+': JMD 150,000');
+      } else if (nameLower.indexOf('paint') >= 0) {
+        if (paintArea>0) { var cost3=paintArea*45; total+=cost3; lines.push(name+': JMD '+cost3.toLocaleString()); }
         else lines.push(name+': Enter area for price');
       } else {
         lines.push(name+': Quote on visit');
@@ -840,7 +855,7 @@ window.addEventListener('DOMContentLoaded', function() {
     list.querySelectorAll('.service-check').forEach(function(el){
       el.addEventListener('click', function(){
         var key  = el.dataset.service;
-        var name = el.dataset.name;
+        var name = el.querySelector('.service-check-name') ? el.querySelector('.service-check-name').textContent.trim() : (el.dataset.name||key);
         if (state.services[key]) { delete state.services[key]; el.classList.remove('checked'); }
         else { state.services[key] = name; el.classList.add('checked'); }
         updateSummary();
