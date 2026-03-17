@@ -658,6 +658,7 @@
                     <div class="sf"><label>Phone</label><input id="s-phone" placeholder="+1 (876) 000-0000" /></div>
                     <div class="sf"><label>Email</label><input id="s-email" placeholder="info@pifinishings.com" /></div>
                   </div>
+                  <div class="sf"><label>Business Hours</label><input id="s-hours" placeholder="e.g. Mon – Sat, 8am – 6pm" /></div>
                   <div class="sf-row">
                     <div class="sf"><label>Website</label><input id="s-website" placeholder="www.pifinishings.com" /></div>
                     <div class="sf"><label>TRN (optional)</label><input id="s-trn" placeholder="123-456-789" /></div>
@@ -1677,15 +1678,15 @@ function loadSettings(){
   return sbGet('invoice_settings','limit=1').then(function(data){
     var s=(Array.isArray(data)&&data[0])?data[0]:{};
     invoiceSettings=s;
-    var fields=['company','trading','address','phone','email','website','trn','bank','acct_name','acct_num','pay_note','footer_note'];
-    var ids=['s-company','s-trading','s-address','s-phone','s-email','s-website','s-trn','s-bank','s-acct-name','s-acct-num','s-pay-note','s-footer'];
+    var fields=['company','trading','address','phone','email','hours','website','trn','bank','acct_name','acct_num','pay_note','footer_note'];
+    var ids=['s-company','s-trading','s-address','s-phone','s-email','s-hours','s-website','s-trn','s-bank','s-acct-name','s-acct-num','s-pay-note','s-footer'];
     fields.forEach(function(f,i){var el=document.getElementById(ids[i]);if(el&&s[f]) el.value=s[f];});
     updateSettingsPreview();
   });
 }
 
 document.getElementById('saveSettingsBtn').onclick=function(){
-  var data={id:1,company:document.getElementById('s-company').value,trading:document.getElementById('s-trading').value,address:document.getElementById('s-address').value,phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,website:document.getElementById('s-website').value,trn:document.getElementById('s-trn').value,bank:document.getElementById('s-bank').value,acct_name:document.getElementById('s-acct-name').value,acct_num:document.getElementById('s-acct-num').value,pay_note:document.getElementById('s-pay-note').value,footer_note:document.getElementById('s-footer').value};
+  var data={id:1,company:document.getElementById('s-company').value,trading:document.getElementById('s-trading').value,address:document.getElementById('s-address').value,phone:document.getElementById('s-phone').value,email:document.getElementById('s-email').value,hours:document.getElementById('s-hours').value,website:document.getElementById('s-website').value,trn:document.getElementById('s-trn').value,bank:document.getElementById('s-bank').value,acct_name:document.getElementById('s-acct-name').value,acct_num:document.getElementById('s-acct-num').value,pay_note:document.getElementById('s-pay-note').value,footer_note:document.getElementById('s-footer').value};
   invoiceSettings=data;
   sbUpsert('invoice_settings',data).then(function(){showToast('Settings saved ✓');updateSettingsPreview();}).catch(function(){showToast('Failed to save','error');});
 };
